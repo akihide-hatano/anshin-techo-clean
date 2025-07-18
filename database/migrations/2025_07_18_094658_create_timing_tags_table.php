@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('timing_tags', function (Blueprint $table) {
             $table->increments('timing_tag_id');
             $table->string('timing_name')->unique();
+            $table->time('base_time')->nullable();
             $table->timestamps();
         });
     }

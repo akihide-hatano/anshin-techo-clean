@@ -16,7 +16,6 @@ class TimingTagSeeder extends Seeder
         // 既存のデータをクリア（開発時のみ推奨）
         DB::table('timing_tags')->truncate();
 
-        // デフォルトの服用タイミングデータを挿入
         DB::table('timing_tags')->insert([
             [
                 'timing_name' => '朝食前', // 追加

@@ -28,7 +28,7 @@ return new class extends Migration
 
             // その他のカラム
             $table->boolean('is_completed')->default(false); // 服用完了したか（デフォルトは未完了）
-            $table->integer('taken_dosage')->nullable(); // 実際に服用した量（任意）
+            $table->string('taken_dosage')->nullable(); // 実際に服用した量（任意）
             $table->timestamp('taken_at')->nullable(); // 実際に服用した時刻または記録日時（任意）
             $table->text('reason_not_taken')->nullable(); // 服用しなかった理由（任意）
             $table->text('content')->nullable(); // 記録に関する自由記述（メモなど、ER図に合わせて追加）

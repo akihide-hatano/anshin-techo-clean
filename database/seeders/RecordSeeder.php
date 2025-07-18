@@ -31,8 +31,8 @@ class RecordSeeder extends Seeder
             return;
         }
 
-        // データを生成する日数 (例: 過去30日間)
-        $daysToGenerate = 50;
+        // データを生成する日数 (例: 過去50日間)
+        $daysToGenerate = 50; // 指定された日数に変更
 
         // 各日付と各タイミングタグに対してレコードを作成
         for ($i = 0; $i < $daysToGenerate; $i++) {
@@ -43,10 +43,18 @@ class RecordSeeder extends Seeder
                 if (!in_array($timingTag->timing_name, ['就寝前', '頓服', 'その他'])) {
                     // 各タイミングでランダムな薬を1〜3種類選ぶ
                     $numMedications = rand(1, 3);
-                    $selectedMedications = $medications->random($numMedications);
+                    // 選択された薬が$medicationsの総数を超えないように調整
+                    $selectedMedications = $medications->count() >= $numMedications ?
+                                           $medications->random($numMedications) :
+                                           $medications; // 薬が少ない場合は全て選択
+
+                    // random()が単一のモデルを返す場合があるので、コレクションに変換
+                    if (!($selectedMedications instanceof \Illuminate\Support\Collection)) {
+                        $selectedMedications = collect([$selectedMedications]);
+                    }
 
                     foreach ($selectedMedications as $medication) {
-                        $isCompleted = (rand(0, 9) < 92); // 80%の確率で服用完了
+                        $isCompleted = (rand(0, 9) < 8); // 80%の確率で服用完了 (以前の80%に戻しました。rand(0, 9) < 92 は常にtrueになるため)
 
                         $takenAt = null;
                         if ($timingTag->base_time) {
@@ -58,13 +66,16 @@ class RecordSeeder extends Seeder
                             $takenAt = $currentDate->copy()->addHours(rand(0, 23))->addMinutes(rand(0, 59));
                         }
 
+                        // ★★★ ここから taken_dosage の修正 ★★★
+                        $randomDosage = rand(1, 10) . '錠'; // 1〜10のランダムな数字に「錠」を付与
+                        // ★★★ ここまで taken_dosage の修正 ★★★
 
                         $record = [
                             'user_id' => $user->id,
                             'medication_id' => $medication->medication_id,
                             'timing_tag_id' => $timingTag->timing_tag_id,
                             'is_completed' => $isCompleted,
-                            'taken_dosage' => $isCompleted ? $medication->dosage : null, // 完了ならデフォルト用量、未完了ならnull
+                            'taken_dosage' => $isCompleted ? $randomDosage : null, // 完了ならランダム用量、未完了ならnull
                             'taken_at' => $isCompleted ? $takenAt : null, // 完了なら服用時間、未完了ならnull
                             'reason_not_taken' => $isCompleted ? null : (rand(0, 1) ? '飲み忘れ' : '体調不良'), // 未完了なら理由
                             'content' => $isCompleted ? '問題なく服用しました。' : '服用できませんでした。',

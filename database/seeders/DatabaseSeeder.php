@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TimingTagSeeder::class,    // 服用タイミングのシーダー
             MedicationSeeder::class,   // 薬情報のシーダー
-            // RecordSeeder::class,       // 服用記録のシーダー (外部キーの関係上、他のシーダーの後に)
+            RecordSeeder::class,       // 服用記録のシーダー (外部キーの関係上、他のシーダーの後に)
         ]);
     }
 }

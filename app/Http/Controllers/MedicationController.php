@@ -14,7 +14,7 @@ class MedicationController extends Controller
     public function index()
     {
         $medications = Medication::all();
-        dd($medications);
+        // dd($medications);
 
         return view('medications.index', compact('medications'));
     }

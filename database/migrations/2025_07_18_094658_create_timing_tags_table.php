@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('timing_tags', function (Blueprint $table) {
-            $table->id();
+            $table->increments('timing_tag_id');
+            $table->string('timing_name')->unique();
             $table->timestamps();
         });
     }

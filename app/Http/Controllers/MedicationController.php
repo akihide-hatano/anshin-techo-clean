@@ -32,7 +32,14 @@ class MedicationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validationの作成
+        $request->validate([
+            'medication_name'=>'required|string|max:255|unique:medications,medication_name',
+            'dosage'=>'nullable|string|max:255',
+            'notes'=>'nullable|string|max:1000',
+            'effect'=>'nullable|string|max:1000',
+            'side_effect'=>'nullable|string|max:1000',
+        ]);
     }
 
     /**

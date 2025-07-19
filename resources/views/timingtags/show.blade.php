@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('服用タイミングの新規登録') }}
+            {{ __('服用タイミングの詳細') }}
         </h2>
     </x-slot>
 
@@ -9,56 +9,57 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 text-center">新しい服用タイミングを登録</h1>
+                    <h1 class="text-2xl font-bold mb-6 text-center">服用タイミングの詳細情報</h1>
 
-                    {{-- バリデーションエラーの表示 --}}
-                    @if ($errors->any())
-                        <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                    {{-- ステータスメッセージの表示 --}}
+                    @if (session('status'))
+                        <div class="mb-4 font-medium text-sm text-green-600 bg-green-100 p-3 rounded-md">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="mb-4 font-medium text-sm text-red-600 bg-red-100 p-3 rounded-md">
+                            {{ session('error') }}
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('timingtags.store') }}">
-                        @csrf
-
-                        {{-- タイミング名 --}}
-                        <div class="mb-4">
-                            <label for="timing_name" class="block text-sm font-medium text-gray-700">タイミング名 <span class="text-red-500">*</span></label>
-                            <input type="text" name="timing_name" id="timing_name"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                value="{{ old('timing_name') }}" required autofocus>
-                            @error('timing_name')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-indigo-700 mb-4 border-b pb-2 border-gray-200">
+                            {{ $timingtag->timing_name }} {{-- ここは $timingtag (小文字) --}}
+                        </h2>
+                        <div class="space-y-3">
+                            <p class="text-gray-700"><strong class="font-medium text-gray-800">基準時間:</strong> {{ $timingtag->base_time ?? '設定なし' }}</p>
+                            {{-- sort_order は使用しないとのことなので、この行は含めません --}}
+                            <p class="text-gray-600 text-sm mt-4">
+                                <strong class="font-medium text-gray-700">登録日時:</strong> {{ $timingtag->created_at->format('Y/m/d H:i') }}
+                            </p>
+                            <p class="text-gray-600 text-sm">
+                                <strong class="font-medium text-gray-700">最終更新日時:</strong> {{ $timingtag->updated_at->format('Y/m/d H:i') }}
+                            </p>
                         </div>
 
-                        {{-- 基準時間 (HH:MM形式) --}}
-                        <div class="mb-4">
-                            <label for="base_time" class="block text-sm font-medium text-gray-700">基準時間 (例: 08:00)</label>
-                            <input type="time" name="base_time" id="base_time"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                value="{{ old('base_time') }}">
-                            @error('base_time')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        {{-- アクションボタン --}}
+                        <div class="mt-6 flex justify-start space-x-3">
+                            {{-- 編集ボタン --}}
+                            <a href="{{ route('timingtags.edit', $timingtag) }}" class="inline-flex items-center px-4 py-2 bg-yellow-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-500 focus:bg-yellow-500 active:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                編集
+                            </a>
 
-                        <div class="flex items-center justify-end mt-4">
-                            {{-- 登録ボタン --}}
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                登録
-                            </button>
+                            {{-- 削除ボタン (フォームとして実装) --}}
+                            <form action="{{ route('timingtags.destroy', $timingtag) }}" method="POST" onsubmit="return confirm('本当にこの服用タイミングを削除しますか？\n関連する記録がある場合は削除できません。');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    削除
+                                </button>
+                            </form>
 
-                            {{-- キャンセル・一覧に戻るボタン --}}
-                            <a href="{{ route('timingtags.index') }}" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                キャンセル
+                            {{-- 一覧に戻るボタン --}}
+                            <a href="{{ route('timingtags.index') }}" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                一覧に戻る
                             </a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

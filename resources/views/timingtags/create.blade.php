@@ -29,8 +29,8 @@
                         <div class="mb-4">
                             <label for="timing_name" class="block text-sm font-medium text-gray-700">タイミング名 <span class="text-red-500">*</span></label>
                             <input type="text" name="timing_name" id="timing_name"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                   value="{{ old('timing_name') }}" required autofocus>
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                value="{{ old('timing_name') }}" required autofocus>
                             @error('timing_name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -40,8 +40,8 @@
                         <div class="mb-4">
                             <label for="base_time" class="block text-sm font-medium text-gray-700">基準時間 (例: 08:00)</label>
                             <input type="time" name="base_time" id="base_time"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                   value="{{ old('base_time') }}">
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                value="{{ old('base_time') }}">
                             @error('base_time')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror

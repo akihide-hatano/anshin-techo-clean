@@ -6,6 +6,8 @@ use App\Models\TimingTag;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule; // uniqueルールで使用するため追加
 
+use function Ramsey\Uuid\v1;
+
 class TimingTagController extends Controller
 {
     /**
@@ -37,9 +39,9 @@ class TimingTagController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(TimingTag $timingtag)
     {
-        //
+        return view('timingtags.show',compact('timingtag'));
     }
 
     /**

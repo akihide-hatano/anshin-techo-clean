@@ -64,7 +64,7 @@ class MedicationController extends Controller
     public function show(Medication $medication)
     {
         // dd($medication);
-        return view('medication.show',compact('medication'));
+        return view('medications.show',compact('medication'));
     }
 
     /**
@@ -99,8 +99,6 @@ class MedicationController extends Controller
 
         return redirect()->route('medications.show',$medication)
                         ->with('status','薬の情報が更新されました');
-
-
     }
     /**
      * Remove the specified resource from storage.

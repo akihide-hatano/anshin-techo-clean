@@ -25,7 +25,7 @@ class TimingTagController extends Controller
      */
     public function create()
     {
-        //
+        return view('timingtags.create');
     }
 
     /**
@@ -33,7 +33,18 @@ class TimingTagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'timing_name' => 'required|string|max:255|unique:timing_tags,timing_name',
+            'base_time' => 'nullable|date_format:H:i', // HH:MM形式の時間を許可
+        ]);
+
+        TimingTag::create([
+            'timing_name' => $request->timing_name,
+            'base_time' => $request->base_time,
+        ]);
+
+        return redirect()->route('timingtags.index')
+                        ->with('status','新しい服用タイミングが登録されました');
     }
 
     /**

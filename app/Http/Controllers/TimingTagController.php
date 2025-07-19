@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimingTag;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule; // uniqueルールで使用するため追加
 
 class TimingTagController extends Controller
 {
@@ -11,7 +13,9 @@ class TimingTagController extends Controller
      */
     public function index()
     {
-        //
+        $timingTags = TimingTag::all();
+        // dd($timingTags);
+        return view('timingtags.index',compact('timingTags'));
     }
 
     /**

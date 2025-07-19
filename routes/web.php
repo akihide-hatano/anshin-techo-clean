@@ -25,6 +25,6 @@ Route::resource('records', RecordController::class);
 // 薬のリソースルート
 Route::resource('medications', MedicationController::class);
 // 服用タイミングのリソースルート
-Route::resource('timing_tags', TimingTagController::class); // base_timeのCRUD用
+Route::resource('timingtags', TimingTagController::class);
 
 require __DIR__.'/auth.php';

@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('record_medication', function (Blueprint $table) {
+             $table->id('record_medication_id'); // 中間テーブル自身の主キー
             // ユーザーID (usersテーブルへの外部キー)
-            $table->foreignId('record_id')->constrained('records', 'id')->onDelete('cascade');
-            $table->foreignId('medications_id')->constrained('medications', 'id')->onDelete('cascade');
+            $table->foreignId('record_id')->constrained('records', 'record_id')->onDelete('cascade');
+            $table->foreignId('medication_id')->constrained('medications', 'medication_id')->onDelete('cascade');
 
             // この服用記録における、この薬の実際の服用量
             $table->string('taken_dosage')->nullable();

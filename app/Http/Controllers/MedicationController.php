@@ -24,7 +24,8 @@ class MedicationController extends Controller
      */
     public function create()
     {
-        //
+        // 薬の新規作成フォームを表示
+        return view('medications.create');
     }
 
     /**
@@ -38,8 +39,22 @@ class MedicationController extends Controller
             'dosage'=>'nullable|string|max:255',
             'notes'=>'nullable|string|max:1000',
             'effect'=>'nullable|string|max:1000',
-            'side_effect'=>'nullable|string|max:1000',
+            'side_effects'=>'nullable|string|max:1000',
         ]);
+        //databaseへの保存
+        Medication::create([
+            'medication_name'=>$request->medication_name,
+            'dosage'=>$request->dosage,
+            'notes'=>$request->notes,
+            'effect'=>$request->effect,
+            'side_effects' => $request->side_effects,
+        ]);
+
+        // dd($request);
+
+         // 3. リダイレクト (登録後、薬一覧ページへ戻る)
+        return redirect()->route('medications.index')
+                         ->with('status', '新しい薬が登録されました！'); // フラッシュメッセージ
     }
 
     /**

@@ -18,7 +18,7 @@
                         </div>
                     @endif
 
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">
+                    <div class="bg-gray-200 border border-gray-200 rounded-lg shadow-md p-6">
                         <h2 class="text-xl font-semibold text-indigo-700 mb-4 border-b pb-2 border-gray-200">
                             {{ $medication->medication_name }}
                         </h2>

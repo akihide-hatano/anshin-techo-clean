@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-gray-200 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h1 class="text-2xl font-bold mb-6 text-center">薬の情報を編集</h1>
 
@@ -21,7 +21,6 @@
                             </ul>
                         </div>
                     @endif
-
                     <form method="POST" action="{{ route('medications.update', $medication) }}">
                         @csrf
                         @method('PUT')

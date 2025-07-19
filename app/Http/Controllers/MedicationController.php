@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Medication;
 use Illuminate\Http\Request;
 
+use function Ramsey\Uuid\v1;
 
 class MedicationController extends Controller
 {
@@ -69,24 +70,46 @@ class MedicationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Medication $medication)
     {
-        //
+        return view('medications.edit',compact('medication'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Medication $medication)
     {
-        //
-    }
+        //validationの作成
+        $request->validate([
+            'medication_name'=>'required|string|max:255|unique:medications,medication_name',
+            'dosage'=>'nullable|string|max:255',
+            'notes'=>'nullable|string|max:1000',
+            'effect'=>'nullable|string|max:1000',
+            'side_effects'=>'nullable|string|max:1000',
+        ]);
 
+        $medication->update([
+            'medication_name' => $request->medication_name,
+            'dosage' => $request->dosage,
+            'notes' => $request->notes,
+            'effect' => $request->effect,
+            'side_effects' => $request->side_effects,
+        ]);
+
+        return redirect()->route('medications.show',$medication)
+                        ->with('status','薬の情報が更新されました');
+
+
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Medication $medication)
     {
-        //
+        $medication->delete();
+
+        return redirect()->route('medications.index')
+                        ->with('status','薬の情報を削除しました');
     }
 }

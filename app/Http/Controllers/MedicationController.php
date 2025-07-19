@@ -60,9 +60,10 @@ class MedicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Medication $medication)
     {
-        //
+        // dd($medication);
+        return view('medication.show',compact('medication'));
     }
 
     /**

@@ -59,17 +59,35 @@ class TimingTagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(TimingTag $timingtag)
     {
-        //
+        // dd($timingtag);
+        return view('timingtags.edit',compact('timingtag'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, TimingTag $timingtag)
     {
-        //
+        $request->validate([
+            'timing_name' => [
+                'required',
+                'string',
+                'max:255',
+                // 更新時は自分自身の名前を除外してuniqueチェックを行う
+                Rule::unique('timing_tags')->ignore($timingtag->timing_tag_id, 'timing_tag_id'),
+            ],
+            'base_time' => 'nullable|date_format:H:i', // HH:MM形式の時間を許可
+        ]);
+
+        $timingtag->update([
+            'timing_name' => $request->timing_name,
+            'base_time' => $request->base_time,
+        ]);
+
+        return redirect()->route('timingtags.show', $timingtag)
+                        ->with('status','服用タイミングが更新されました');
     }
 
     /**

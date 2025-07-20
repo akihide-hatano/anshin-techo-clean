@@ -20,21 +20,13 @@
                         </a>
                     </div>
 
-                    {{-- ★ここから追加・修正★ --}}
-                    @if ($hasUncompletedMedications)
-                        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-center font-bold">
-                            {{ __('未完了の内服記録があります。') }}
-                        </div>
-                    @endif
-                    {{-- ★ここまで追加・修正★ --}}
-
                     @if ($records->isEmpty())
                         <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">
                             <p class="text-center text-gray-700">{{ __('まだ内服記録がありません。') }}</p>
                         </div>
                     @else
                         {{-- カードグリッドコンテナ --}}
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> {{-- 中画面以上で2列表示、ギャップは6 --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6"> {{-- 中画面以上で2列表示、ギャップは6 --}}
                             @foreach ($records as $record)
                                 <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col h-full"> {{-- カードの基本スタイルと高さを揃えるflex --}}
                                     {{-- カードヘッダー --}}
@@ -43,6 +35,23 @@
                                             {{ __('服用日時') }}: {{ $record->taken_at ? \Carbon\Carbon::parse($record->taken_at)->format('Y/m/d H:i') : '-' }}
                                         </h3>
                                     </div>
+                                    {{-- ★ここにforeachを追加して、その記録に未完了の薬があるかをチェックし、メッセージを表示★ --}}
+                                    @php
+                                        $recordHasUncompleted = false;
+                                        foreach ($record->medications as $medication) {
+                                            if (!$medication->pivot->is_completed) {
+                                                $recordHasUncompleted = true;
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if ($recordHasUncompleted)
+                                        <div class="px-6 py-3 bg-red-100 border-b border-red-400 text-red-700 text-center text-sm font-bold">
+                                            {{ __('この記録には未完了の薬があります。') }}
+                                        </div>
+                                    @endif
+
                                     {{-- カードボディ --}}
                                     <div class="p-6 flex-grow"> {{-- flex-growでコンテンツ領域を広げ、フッターを下に固定 --}}
                                         <p class="text-gray-700 mb-3">

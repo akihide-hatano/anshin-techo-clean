@@ -30,22 +30,15 @@ class RecordController extends Controller
                     ->orderBy('taken_at','desc')
                     ->paginate(10);
 
-        // 未完了の薬があるかどうかをチェックするフラグ
-        $hasUncompletedMedications = false;
+        // 各レコードに「未完了の薬があるか」を示すカスタム属性を追加
+        // paginator からコレクションを取得し、each() で各モデルを処理
+        $records->getCollection()->each(function ($record) {
+            $record->record_has_uncompleted = $record->medications->contains(function ($medication) {
+                return !$medication->pivot->is_completed;
+            });
+        });
 
-        foreach ($records as $record) {
-            foreach ($record->medications as $medication) {
-                // is_completed が false の薬が一つでもあればフラグを立てる
-                if (!$medication->pivot->is_completed) {
-                    $hasUncompletedMedications = true;
-                    // 一つでも見つかれば、これ以上チェックする必要はない
-                    break 2; // 2階層のループを抜ける
-                }
-            }
-        }
-        // dd($hasUncompletedMedications);
-
-        return view('records.index', compact('records','hasUncompletedMedications'));
+        return view('records.index', compact('records'));
     }
 
     /**

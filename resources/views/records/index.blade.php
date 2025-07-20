@@ -35,23 +35,13 @@
                                             {{ __('服用日時') }}: {{ $record->taken_at ? \Carbon\Carbon::parse($record->taken_at)->format('Y/m/d H:i') : '-' }}
                                         </h3>
                                     </div>
-                                    {{-- ★ここにforeachを追加して、その記録に未完了の薬があるかをチェックし、メッセージを表示★ --}}
-                                    @php
-                                        $recordHasUncompleted = false;
-                                        foreach ($record->medications as $medication) {
-                                            if (!$medication->pivot->is_completed) {
-                                                $recordHasUncompleted = true;
-                                                break;
-                                            }
-                                        }
-                                    @endphp
-
-                                    @if ($recordHasUncompleted)
-                                        <div class="px-6 py-3 bg-red-100 border-b border-red-400 text-red-700 text-center text-sm font-bold">
+                                    {{-- ★ここを修正：コントローラーで追加した record_has_uncompleted プロパティを使用★ --}}
+                                    @if ($record->record_has_uncompleted)
+                                        <div class="px-6 py-3 bg-red-100 border-b border-red-400 text-red-700 text-center text-sm font-bold -mx-6 -mt-2 mb-2">
                                             {{ __('この記録には未完了の薬があります。') }}
                                         </div>
                                     @endif
-
+                                    {{-- ★ここまで修正★ --}}
                                     {{-- カードボディ --}}
                                     <div class="p-6 flex-grow"> {{-- flex-growでコンテンツ領域を広げ、フッターを下に固定 --}}
                                         <p class="text-gray-700 mb-3">

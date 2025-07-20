@@ -52,7 +52,18 @@
                                             @else
                                                 <ul class="list-none pl-0 mt-1 space-y-1"> {{-- リストスタイルを削除し、マージンとスペースを追加 --}}
                                                     @foreach ($record->medications as $medication)
-                                                        <li class="text-sm">{{ $medication->medication_name }} ({{ $medication->pivot->taken_dosage ?? '-' }})</li>
+                                                        <li class="text-sm">
+                                                            {{ $medication->medication_name }} ({{ $medication->pivot->taken_dosage ?? '-' }})
+                                                            {{-- is_completedの表示 --}}
+                                                            @php
+                                                                $isCompleted = $medication->pivot->is_completed;
+                                                                $reasonNotTaken = $medication->pivot->reason_not_taken;
+                                                            @endphp
+                                                            <span class="ml-2 font-bold"
+                                                                  data-is-completed="{{ $isCompleted ? 'true' : 'false' }}"
+                                                                  data-reason="{{ $reasonNotTaken ?? '' }}">
+                                                            </span>
+                                                        </li>
                                                     @endforeach
                                                 </ul>
                                             @endif
@@ -83,7 +94,7 @@
                         </div>
 
                         {{-- ページネーションリンク --}}
-                        <div class="flex justify-center mt-8"> {{-- マージンを増やして見やすく --}}
+                        <div class="flex justify-center mt-8">
                             {{ $records->links() }}
                         </div>
                     @endif
@@ -91,4 +102,11 @@
             </div>
         </div>
     </div>
+
+    {{-- ★JavaScriptファイルを読み込む★ --}}
+    {{-- Vite (Laravel 9以降) を使用している場合 --}}
+    @vite('resources/js/records-index.js')
+    {{-- Laravel Mix (Laravel 8以前) を使用している場合 --}}
+    {{-- <script src="{{ asset('js/records_index.js') }}" defer></script> --}}
+
 </x-app-layout>

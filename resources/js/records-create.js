@@ -11,16 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
         { value: '', text: '理由を選択してください' },
         { value: '飲み忘れ', text: '飲み忘れ' },
         { value: '気分が悪かったため', text: '気分が悪かったため' },
-        { value: '副作用が心配なため', text: '副作用が心配なため' },
+        { value: '副作用が心配なため', 'text': '副作用が心配なため' },
         { value: '医師の指示により中止', text: '医師の指示により中止' },
         { value: 'その他', text: 'その他' }
     ];
 
     // PHPから渡された薬のリストを取得 (JSON形式)
-    const availableMedications = window.medicationsList || []; // medicationsListが未定義の場合に備える
+    const availableMedications = window.medicationsList || [];
 
     let medicationIndex = medicationsContainer.children.length;
-    // 初回ロード時に既存の medication-entry のインデックスを正しく設定
     if (medicationIndex > 0) {
         const lastChild = medicationsContainer.lastElementChild;
         const selectElement = lastChild.querySelector('select[name^="medications"]');
@@ -33,15 +32,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-
     // 各薬の完了チェックボックスと理由フィールドの初期設定とイベントリスナー設定
     function setupMedicationEntry(entryElement) {
         const isCompletedCheckbox = entryElement.querySelector('.medication-completed-checkbox');
         const reasonNotTakenField = entryElement.querySelector('.reason-not-taken-field');
-        const reasonSelect = reasonNotTakenField.querySelector('.reason-select'); // クラス名で取得
+        const reasonSelect = reasonNotTakenField.querySelector('.reason-select');
 
-        // 薬のドロップダウンにオプションを追加
+        // ★修正点1: 理由ドロップダウンの既存オプションを全てクリア★
+        // reasonSelect.innerHTML = ''; // これでも良いが、より効率的な方法
+        while (reasonSelect.firstChild) {
+            reasonSelect.removeChild(reasonSelect.firstChild);
+        }
+
+        // 理由ドロップダウンにオプションを追加
+        reasonOptions.forEach(optionData => {
+            const option = document.createElement('option');
+            option.value = optionData.value;
+            option.textContent = optionData.text;
+            reasonSelect.appendChild(option);
+        });
+
+        // 薬のドロップダウンにオプションを追加 (こちらも重複しないように修正)
         const medicationSelect = entryElement.querySelector('.medication-select');
+        // ★修正点2: 薬ドロップダウンの既存オプションを全てクリア★
+        while (medicationSelect.firstChild) {
+            medicationSelect.removeChild(medicationSelect.firstChild);
+        }
+        // デフォルトの「薬を選択」オプションを最初に追加
+        const defaultMedicationOption = document.createElement('option');
+        defaultMedicationOption.value = '';
+        defaultMedicationOption.textContent = '薬を選択';
+        medicationSelect.appendChild(defaultMedicationOption);
+
         availableMedications.forEach(medication => {
             const option = document.createElement('option');
             option.value = medication.medication_id;
@@ -54,14 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (oldMedicationId) {
             medicationSelect.value = oldMedicationId;
         }
-
-        // 理由ドロップダウンにオプションを追加
-        reasonOptions.forEach(optionData => {
-            const option = document.createElement('option');
-            option.value = optionData.value;
-            option.textContent = optionData.text;
-            reasonSelect.appendChild(option);
-        });
 
         // old() データから理由を選択状態にする
         const oldReasonValue = reasonSelect.getAttribute('data-old-reason-value');
@@ -90,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 既存の薬の入力欄全てに初期設定を適用
     medicationsContainer.querySelectorAll('.medication-entry').forEach(setupMedicationEntry);
-
 
     addMedicationBtn.addEventListener('click', function () {
         addMedicationEntry();
@@ -130,11 +143,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function addMedicationEntry() {
         const newEntry = document.createElement('div');
         newEntry.classList.add('p-4', 'border', 'border-gray-200', 'rounded-md', 'mb-2', 'medication-entry', 'bg-gray-50');
+
+        // 薬のオプションHTMLを生成
+        const medicationOptionsHtml = availableMedications.map(medication => `<option value="${medication.medication_id}">${medication.medication_name}</option>`).join('');
+        // 理由のオプションHTMLを生成
+        const reasonOptionsHtml = reasonOptions.map(option => `<option value="${option.value}">${option.text}</option>`).join('');
+
         newEntry.innerHTML = `
             <div class="flex items-center space-x-2 mb-2">
                 <select name="medications[${medicationIndex}][medication_id]" class="medication-select block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                     <option value="">薬を選択</option>
-                    ${availableMedications.map(medication => `<option value="${medication.medication_id}">${medication.medication_name}</option>`).join('')}
+                    ${medicationOptionsHtml}
                 </select>
                 <input type="text" name="medications[${medicationIndex}][taken_dosage]"
                        class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -157,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <select name="medications[${medicationIndex}][reason_not_taken]" id="reason_not_taken_${medicationIndex}"
                         class="reason-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="">理由を選択してください</option>
-                    ${reasonOptions.map(option => `<option value="${option.value}">${option.text}</option>`).join('')}
+                    ${reasonOptionsHtml}
                 </select>
             </div>
         `;

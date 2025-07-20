@@ -36,7 +36,7 @@
                             @error('taken_date')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                            @error('taken_at') {{-- hiddenフィールドのエラーも表示できるように --}}
+                            @error('taken_at')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -66,45 +66,87 @@
                             <div id="medications-container">
                                 @if(old('medications'))
                                     @foreach(old('medications') as $index => $oldMedication)
-                                        <div class="flex items-center space-x-2 mb-2 medication-entry">
-                                            <select name="medications[{{ $index }}][medication_id]" class="block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                                        <div class="p-4 border border-gray-200 rounded-md mb-2 medication-entry bg-gray-50">
+                                            <div class="flex items-center space-x-2 mb-2">
+                                                <select name="medications[{{ $index }}][medication_id]" class="medication-select block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required
+                                                        data-old-medication-id="{{ $oldMedication['medication_id'] ?? '' }}"> {{-- old値保持用 --}}
+                                                    <option value="">薬を選択</option>
+                                                    {{-- JavaScriptでオプションを動的に追加します --}}
+                                                </select>
+                                                <input type="text" name="medications[{{ $index }}][taken_dosage]"
+                                                       class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                       placeholder="服用量" value="{{ $oldMedication['taken_dosage'] ?? '' }}">
+                                                <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                <input type="checkbox" name="medications[{{ $index }}][is_completed]" id="is_completed_{{ $index }}" value="1"
+                                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 medication-completed-checkbox"
+                                                       {{ (isset($oldMedication['is_completed']) && $oldMedication['is_completed']) ? 'checked' : '' }}>
+                                                <label for="is_completed_{{ $index }}" class="ml-2 text-sm text-gray-600">服用完了</label>
+                                            </div>
+
+                                            <div class="mt-2 reason-not-taken-field"
+                                                 style="{{ (isset($oldMedication['is_completed']) && $oldMedication['is_completed']) ? 'display: none;' : '' }}">
+                                                <label for="reason_not_taken_{{ $index }}" class="block text-sm font-medium text-gray-700">服用しなかった理由</label>
+                                                <select name="medications[{{ $index }}][reason_not_taken]" id="reason_not_taken_{{ $index }}"
+                                                        class="reason-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                        data-old-reason-value="{{ $oldMedication['reason_not_taken'] ?? '' }}"> {{-- old値保持用 --}}
+                                                    <option value="">理由を選択してください</option>
+                                                    {{-- JavaScriptでオプションを動的に追加します --}}
+                                                </select>
+                                            </div>
+
+                                            @error("medications.{$index}.medication_id")
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                            @error("medications.{$index}.taken_dosage")
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                            @error("medications.{$index}.is_completed")
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                            @error("medications.{$index}.reason_not_taken")
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endforeach
+                                @else
+                                    {{-- デフォルトで1つの薬の入力欄を表示 --}}
+                                    <div class="p-4 border border-gray-200 rounded-md mb-2 medication-entry bg-gray-50">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <select name="medications[0][medication_id]" class="medication-select block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                                                 <option value="">薬を選択</option>
-                                                @foreach($medications as $medication)
-                                                    <option value="{{ $medication->medication_id }}"
-                                                            {{ $oldMedication['medication_id'] == $medication->medication_id ? 'selected' : '' }}>
-                                                        {{ $medication->medication_name }}
-                                                    </option>
-                                                @endforeach
+                                                {{-- JavaScriptでオプションを動的に追加します --}}
                                             </select>
-                                            <input type="text" name="medications[{{ $index }}][taken_dosage]"
+                                            <input type="text" name="medications[0][taken_dosage]"
                                                    class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                   placeholder="服用量" value="{{ $oldMedication['taken_dosage'] ?? '' }}">
+                                                   placeholder="服用量">
                                             <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
                                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
                                                 </svg>
                                             </button>
                                         </div>
-                                    @endforeach
-                                @else
-                                    {{-- デフォルトで1つの薬の入力欄を表示 --}}
-                                    <div class="flex items-center space-x-2 mb-2 medication-entry">
-                                        <select name="medications[0][medication_id]" class="block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                                            <option value="">薬を選択</option>
-                                            @foreach($medications as $medication)
-                                                <option value="{{ $medication->medication_id }}">
-                                                    {{ $medication->medication_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <input type="text" name="medications[0][taken_dosage]"
-                                               class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                               placeholder="服用量">
-                                        <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
+
+                                        <div class="mt-2">
+                                            <input type="checkbox" name="medications[0][is_completed]" id="is_completed_0" value="1" checked
+                                                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 medication-completed-checkbox">
+                                            <label for="is_completed_0" class="ml-2 text-sm text-gray-600">服用完了</label>
+                                        </div>
+
+                                        <div class="mt-2 reason-not-taken-field" style="display: none;">
+                                            <label for="reason_not_taken_0" class="block text-sm font-medium text-gray-700">服用しなかった理由</label>
+                                            <select name="medications[0][reason_not_taken]" id="reason_not_taken_0"
+                                                    class="reason-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                <option value="">理由を選択してください</option>
+                                                {{-- JavaScriptでオプションを動的に追加します --}}
+                                            </select>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -122,31 +164,11 @@
                             @enderror
                         </div>
 
-                        {{-- 服用完了チェックボックス --}}
-                        <div class="mb-4">
-                            <input type="checkbox" name="is_completed" id="is_completed" value="1"
-                                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                   {{ old('is_completed') ? 'checked' : '' }}>
-                            <label for="is_completed" class="ml-2 text-sm text-gray-600">服用完了</label>
-                        </div>
-
-                        {{-- 服用しなかった理由 (is_completedがチェックされていない場合のみ表示) --}}
-                        <div class="mb-6" id="reason_not_taken_field" style="{{ old('is_completed') ? 'display: none;' : '' }}">
-                            <label for="reason_not_taken" class="block text-sm font-medium text-gray-700">服用しなかった理由</label>
-                            <textarea name="reason_not_taken" id="reason_not_taken" rows="3"
-                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('reason_not_taken') }}</textarea>
-                            @error('reason_not_taken')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <div class="flex items-center justify-end mt-4">
-                            {{-- 登録ボタン --}}
                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 登録
                             </button>
 
-                            {{-- キャンセル・一覧に戻るボタン --}}
                             <a href="{{ route('records.index') }}" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 キャンセル
                             </a>
@@ -157,7 +179,11 @@
         </div>
     </div>
 
+    {{-- JavaScriptに薬のリストを渡す --}}
+    <script>
+        window.medicationsList = @json($medications);
+    </script>
     {{-- JavaScriptファイルを読み込む --}}
-    @vite('resources/js/records_create.js')
+    @vite('resources/js/records-create.js')
 
 </x-app-layout>

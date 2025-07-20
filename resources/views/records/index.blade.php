@@ -20,6 +20,14 @@
                         </a>
                     </div>
 
+                    {{-- ★ここから追加・修正★ --}}
+                    @if ($hasUncompletedMedications)
+                        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-center font-bold">
+                            {{ __('未完了の内服記録があります。') }}
+                        </div>
+                    @endif
+                    {{-- ★ここまで追加・修正★ --}}
+
                     @if ($records->isEmpty())
                         <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">
                             <p class="text-center text-gray-700">{{ __('まだ内服記録がありません。') }}</p>

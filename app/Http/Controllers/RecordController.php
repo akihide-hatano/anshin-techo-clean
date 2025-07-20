@@ -43,8 +43,9 @@ class RecordController extends Controller
                 }
             }
         }
+        // dd($hasUncompletedMedications);
 
-        return view('records.index', compact('records'));
+        return view('records.index', compact('records','hasUncompletedMedications'));
     }
 
     /**

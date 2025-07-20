@@ -25,7 +25,7 @@ Route::resource('records', RecordController::class);
 // 薬のリソースルート
 Route::resource('medications', MedicationController::class);
 //カレンダー関連のルート
-Route::get('/records/calender'.[RecordController::class,'calander'])->name('records.calendar');
+Route::get('/records/calendar'.[RecordController::class,'calendar'])->name('records.calendar');
 Route::get('/api/records/events', [RecordController::class, 'getCalendarEvents'])->name('api.records.events');
 // 服用タイミングのリソースルート
 Route::resource('timingtags', TimingTagController::class);

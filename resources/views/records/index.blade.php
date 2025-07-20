@@ -25,6 +25,18 @@
                             <p class="text-center text-gray-700">{{ __('まだ内服記録がありません。') }}</p>
                         </div>
                     @else
+                    {{-- 成功メッセージの表示 --}}
+                    @if (session('success'))
+                        <div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    {{-- エラーメッセージの表示 --}}
+                    @if (session('error'))
+                        <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                         {{-- カードグリッドコンテナ --}}
                         <div class="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6"> {{-- 中画面以上で2列表示、ギャップは6 --}}
                             @foreach ($records as $record)
@@ -35,13 +47,11 @@
                                             {{ __('服用日時') }}: {{ $record->taken_at ? \Carbon\Carbon::parse($record->taken_at)->format('Y/m/d H:i') : '-' }}
                                         </h3>
                                     </div>
-                                    {{-- ★ここを修正：コントローラーで追加した record_has_uncompleted プロパティを使用★ --}}
                                     @if ($record->record_has_uncompleted)
                                         <div class="px-6 py-3 bg-red-100 border-b border-red-400 text-red-700 text-center text-sm font-bold -mx-6 -mt-2 mb-2">
                                             {{ __('この記録には未完了の薬があります。') }}
                                         </div>
                                     @endif
-                                    {{-- ★ここまで修正★ --}}
                                     {{-- カードボディ --}}
                                     <div class="p-6 flex-grow"> {{-- flex-growでコンテンツ領域を広げ、フッターを下に固定 --}}
                                         <p class="text-gray-700 mb-3">

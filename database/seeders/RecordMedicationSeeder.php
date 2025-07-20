@@ -4,12 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\Record;    // Recordモデルをインポート
 use App\Models\Medication; // Medicationモデルをインポート
-use App\Models\TimingTag; // TimingTagモデルはRecordSeederで使われるため、ここでは不要だが念のため残すことも可能
+use Illuminate\Support\Facades\DB;
+// use App\Models\TimingTag; // TimingTagモデルはRecordSeederで使われるため、ここでは不要だが念のため残すことも可能
 
-class RecordMedicationSeeder extends Seeder
+class RecordMedicationSeeder extends Seeder // ★ここを修正！
 {
     /**
      * Run the database seeds.

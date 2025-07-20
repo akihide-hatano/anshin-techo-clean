@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('timing_tag_id'); // timing_tags.timing_tag_idがint型のため
             $table->foreign('timing_tag_id')->references('timing_tag_id')->on('timing_tags')->onDelete('restrict');
             // onDelete('restrict') は、関連するレコードがある場合、timing_tagの削除を許可しません。
-
+             $table->timestamp('taken_at')->nullable();
             // その他のカラム
             $table->timestamps(); // created_at, updated_at
         });

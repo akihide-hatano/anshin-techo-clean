@@ -19,7 +19,6 @@ return new class extends Migration
 
             // この服用記録における、この薬の実際の服用量
             $table->string('taken_dosage')->nullable();
-
             // 個々の薬の服用完了状態と理由を中間テーブルで管理
             $table->boolean('is_completed')->default(false);
             $table->text('reason_not_taken')->nullable();

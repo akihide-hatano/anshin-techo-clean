@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Record;
+use App\Models\Medication; // Medication モデルを追加
+use App\Models\TimingTag;  // TimingTag モデルを追加
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class RecordController extends Controller
 {
@@ -11,7 +16,18 @@ class RecordController extends Controller
      */
     public function index()
     {
-        //
+        // まず、ユーザーがログインしていることを確認するガード句
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        // ★Intelephense向けに型ヒントを追加★
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $records = $user->records()->orderBy('record_id', 'desc')->paginate(10);
+
+        return view('records.index', compact('records'));
     }
 
     /**

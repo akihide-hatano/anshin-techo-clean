@@ -48,7 +48,6 @@
                             @enderror
                         </div>
 
-                        {{-- sort_order は使用しないとのことなので、このフィールドは含めません --}}
 
                         <div class="flex items-center justify-end mt-4">
                             {{-- 更新ボタン --}}

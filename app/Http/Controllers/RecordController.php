@@ -25,7 +25,24 @@ class RecordController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $records = $user->records()->orderBy('record_id', 'desc')->paginate(10);
+        $records = $user->records()
+                    ->with(['medications'])
+                    ->orderBy('taken_at','desc')
+                    ->paginate(10);
+
+        // 未完了の薬があるかどうかをチェックするフラグ
+        $hasUncompletedMedications = false;
+
+        foreach ($records as $record) {
+            foreach ($record->medications as $medication) {
+                // is_completed が false の薬が一つでもあればフラグを立てる
+                if (!$medication->pivot->is_completed) {
+                    $hasUncompletedMedications = true;
+                    // 一つでも見つかれば、これ以上チェックする必要はない
+                    break 2; // 2階層のループを抜ける
+                }
+            }
+        }
 
         return view('records.index', compact('records'));
     }

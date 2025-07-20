@@ -20,6 +20,7 @@ class Record extends Model
 
     protected $fillable = [
         'user_id',
+        'taken_at',
         'timing_tag_id',
         // 必要に応じて他のカラム
     ];

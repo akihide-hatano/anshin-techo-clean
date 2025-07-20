@@ -46,7 +46,15 @@ class RecordController extends Controller
      */
     public function create()
     {
-        //
+        // 認証ユーザーの薬ではなく、全ての薬を取得するように変更
+        // Medication モデルがユーザーに紐づかないため、全件取得します。
+        $medications = Medication::orderBy('medication_name')->get(); // ★ここを修正★
+
+        // 服用タイミングはこれまで通り取得
+        $timingTags = TimingTag::orderBy('timing_tag_id', 'asc')->get();
+
+        // dd($medications,$timingTags);
+        return view('records.create', compact('medications', 'timingTags'));
     }
 
     /**

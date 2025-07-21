@@ -161,6 +161,19 @@ class RecordController extends Controller
         //内服薬と服用タイミングを取得
         $medications = Medication::orderBy('medication_name')->get();
         $timingTags = TimingTag::orderBy('timing_tag_id','asc')->get();
+
+        // 関連するmedicationsをロードし、ピボットデータをカスタムプロパティに格納
+        $record->load(['medications' => function($query) {
+            $query->withPivot('taken_dosage', 'is_completed', 'reason_not_taken');
+        }]);
+
+        // 各medicationに表示用のプロパティを追加
+        $record->medications->each(function ($medication) {
+            $medication->_is_completed = $medication->pivot->is_completed;
+            $medication->_reason_not_taken = $medication->pivot->reason_not_taken;
+        });
+        // ★ここを追加★
+        return view('records.edit', compact('record', 'medications', 'timingTags'));
     }
 
     /**

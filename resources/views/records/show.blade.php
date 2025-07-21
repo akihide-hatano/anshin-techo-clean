@@ -56,8 +56,7 @@
                                                 $isCompleted = $medication->pivot->is_completed;
                                                 $reasonNotTaken = $medication->pivot->reason_not_taken;
                                             @endphp
-                                            <span class="ml-2 font-bold
-                                                @if($isCompleted) text-green-600 @else text-red-600 @endif">
+                                            <span class="ml-2 font-bold {{ $isCompleted ? 'text-green-600' : 'text-red-600' }}">
                                                 @if($isCompleted)
                                                     {{ __('完了') }}
                                                 @else

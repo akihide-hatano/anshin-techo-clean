@@ -52,17 +52,13 @@
                                         <li class="text-gray-700">
                                             <strong class="font-medium">{{ $medication->medication_name }}</strong>
                                             （用量: {{ $medication->pivot->taken_dosage ?? '未入力' }}）
-                                            @php
-                                                $isCompleted = $medication->pivot->is_completed;
-                                                $reasonNotTaken = $medication->pivot->reason_not_taken;
-                                            @endphp
-                                            <span class="ml-2 font-bold {{ $isCompleted ? 'text-green-600' : 'text-red-600' }}">
-                                                @if($isCompleted)
+                                            <span class="ml-2 font-bold {{ $medication->_is_completed ? 'text-green-600' : 'text-red-600' }}">
+                                                @if($medication->_is_completed)
                                                     {{ __('完了') }}
                                                 @else
                                                     {{ __('未完了') }}
-                                                    @if ($reasonNotTaken)
-                                                        <span class="text-red-500 text-sm">（理由: {{ $reasonNotTaken }}）</span>
+                                                    @if ($medication->_reason_not_taken)
+                                                        <span class="text-red-500 text-sm">（理由: {{ $medication->_reason_not_taken }}）</span>
                                                     @endif
                                                 @endif
                                             </span>

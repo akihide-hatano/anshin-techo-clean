@@ -136,7 +136,16 @@ class RecordController extends Controller
             abort(403,'記事の確認権限がありません');
         }
         $record->load(['medications','timingTag']);
-        // dd($record);
+
+        // ★ここから追加・修正★
+        // 各medicationに表示用のプロパティを追加
+        $record->medications->each(function ($medication) {
+            // pivotテーブルの値を直接プロパティとして追加
+            $medication->_is_completed = $medication->pivot->is_completed;
+            $medication->_reason_not_taken = $medication->pivot->reason_not_taken;
+        });
+        // ★ここまで追加・修正★
+
         return view('records.show',compact('record'));
     }
 

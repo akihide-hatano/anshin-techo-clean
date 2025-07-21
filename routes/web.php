@@ -20,13 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//カレンダー関連のルート
+Route::get('/records/calendar',[RecordController::class,'calendar'])->name('records.calendar');
+Route::get('/api/records/events', [RecordController::class, 'getCalendarEvents'])->name('api.records.events');
 //内服記録のリソース
 Route::resource('records', RecordController::class);
 // 薬のリソースルート
 Route::resource('medications', MedicationController::class);
-//カレンダー関連のルート
-Route::get('/records/calendar',[RecordController::class,'calendar'])->name('records.calendar');
-Route::get('/api/records/events', [RecordController::class, 'getCalendarEvents'])->name('api.records.events');
 // 服用タイミングのリソースルート
 Route::resource('timingtags', TimingTagController::class);
 

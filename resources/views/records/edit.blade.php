@@ -44,8 +44,8 @@
                         <div class="mb-4">
                             <label for="taken_date" class="block text-sm font-medium text-gray-700">服用日 <span class="text-red-500">*</span></label>
                             <input type="date" name="taken_date" id="taken_date"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                   value="{{ old('taken_date', \Carbon\Carbon::parse($record->taken_at)->format('Y-m-d')) }}" required>
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                value="{{ old('taken_date', \Carbon\Carbon::parse($record->taken_at)->format('Y-m-d')) }}" required>
                             {{-- 実際のタイムスタンプを送信するための隠しフィールド --}}
                             <input type="hidden" name="taken_at" id="taken_at_hidden" value="{{ old('taken_at', \Carbon\Carbon::parse($record->taken_at)->format('Y-m-d\TH:i:s')) }}">
                             @error('taken_date')
@@ -86,7 +86,6 @@
                                             <select name="medications[{{ $index }}][medication_id]" class="medication-select block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required
                                                     data-old-medication-id="{{ old('medications.'.$index.'.medication_id', $medication->medication_id) }}">
                                                 <option value="">薬を選択</option>
-                                                {{-- JavaScriptでオプションを動的に追加します --}}
                                             </select>
                                             <input type="text" name="medications[{{ $index }}][taken_dosage]"
                                                    class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -194,9 +193,6 @@
     {{-- JavaScriptに薬のリストを渡す --}}
     <script>
         window.medicationsList = @json($medications);
-        // edit ページでは、既存の薬の数から medicationIndex を開始するために、
-        // 既存の薬の数をJavaScriptに渡すこともできます。
-        // window.initialMedicationCount = {{ $record->medications->count() }};
     </script>
     {{-- JavaScriptファイルを読み込む --}}
     @vite('resources/js/records-edit.js') {{-- records_create.js を再利用 --}}

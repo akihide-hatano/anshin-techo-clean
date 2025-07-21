@@ -7,6 +7,7 @@ use App\Models\Medication; // Medication モデルを追加
 use App\Models\TimingTag;  // TimingTag モデルを追加
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Auth;
 
 use function Ramsey\Uuid\v1;
@@ -179,16 +180,64 @@ class RecordController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,Record $record)
     {
-        //
+        // 認証されたユーザーがこのレコードを所有しているか確認
+        if ($record->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        //バリデーションで確認
+        $validated = $request->validate([
+            'taken_date' => 'required|date',
+            'timing_tag_id' => 'required|exists:timing_tags,timing_tag_id',
+            'medications' => 'nullable|array',
+            'medications.*.medication_id' => 'required|exists:medications,medication_id',
+            'medications.*.taken_dosage' => 'nullable|string|max:255',
+            'medications.*.is_completed' => 'nullable|boolean',
+            'medications.*.reason_not_taken' => 'nullable|string|max:255',
+        ]);
+
+        $timingTag = TimingTag::find($validated['timing_tag_id']);
+        $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
+        $takenAt = Carbon::parse($validated['taken_date'] . '' .$baseTime);
+
+        $record->update([
+            'taken_at'=>$takenAt,
+            'timing_tag_id'=>$validated['timing_tag_id'],
+        ]);
+
+        // dd($timingTag,$baseTime,$takenAt,$record);
+        $pivotData = [];
+        if (isset($validated['medications'])) {
+            foreach ($validated['medications'] as $medicationData) {
+                $isCompleted = isset($medicationData['is_completed']) && $medicationData['is_completed'] === '1';
+                $reasonNotTaken = null;
+                if (!$isCompleted) {
+                    $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
+                }
+
+                $pivotData[$medicationData['medication_id']] = [
+                    'taken_dosage' => $medicationData['taken_dosage'] ?? null,
+                    'is_completed' => $isCompleted,
+                    'reason_not_taken' => $reasonNotTaken,
+                ];
+            }
+        }
+        $record->medications()->sync($pivotData);
+
+        return redirect()->route('records.show', $record)->with('success', '内服記録が更新されました。');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Record $record)
     {
-        //
+        if( $record->user_id !== Auth::id()){
+            abort(403,'記事削除の権限がありません。');
+         $record->delete();
+        return redirect()->route('records.index')->with('success', '内服記録が削除されました。');
+        }
     }
 }

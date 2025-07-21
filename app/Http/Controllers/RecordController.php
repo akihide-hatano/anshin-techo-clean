@@ -136,7 +136,7 @@ class RecordController extends Controller
             abort(403,'記事の確認権限がありません');
         }
         $record->load(['medications','timingTag']);
-        dd($record);
+        // dd($record);
         return view('records.show',compact('record'));
     }
 

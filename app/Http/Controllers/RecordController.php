@@ -152,9 +152,15 @@ class RecordController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Record $record)
     {
-        //
+        //ユーザーのレコードであることを確認
+        if($record->user_id !== Auth::id()){
+            abort(403,'記事の確認権限がありません');
+        }
+        //内服薬と服用タイミングを取得
+        $medications = Medication::orderBy('medication_name')->get();
+        $timingTags = TimingTag::orderBy('timing_tag_id','asc')->get();
     }
 
     /**

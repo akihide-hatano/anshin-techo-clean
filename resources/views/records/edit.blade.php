@@ -199,6 +199,6 @@
         // window.initialMedicationCount = {{ $record->medications->count() }};
     </script>
     {{-- JavaScriptファイルを読み込む --}}
-    @vite('resources/js/records_create.js') {{-- records_create.js を再利用 --}}
+    @vite('resources/js/records-edit.js') {{-- records_create.js を再利用 --}}
 
 </x-app-layout>

@@ -36,7 +36,7 @@
 
         // VAPID公開鍵 (Firebase ConsoleのCloud Messagingタブから取得したものをここに貼り付けます)
         // ★★★ あなたのVAPID公開鍵に置き換えてください ★★★
-        const vapidKey = "YOUR_VAPID_PUBLIC_KEY";
+        const vapidKey = "BLIX_vYgDfl7y0m5Nu6o6Tb1DapKXSk9ZMZOAnbVwrTdH0HWfzD4PbfZGUCu3ElmsYElaMpG5N0yWyAZxiSTAAQ";
 
         // Service Workerの登録とFCMトークン取得・送信のロジック
         window.requestNotificationPermission = async () => {

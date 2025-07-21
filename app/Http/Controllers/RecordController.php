@@ -240,4 +240,8 @@ class RecordController extends Controller
             $record->delete();
             return redirect()->route('records.index')->with('success', '内服記録が削除されました。');
     }
+
+    public function calendar(){
+        return view('records.calendar');
+    }
 }

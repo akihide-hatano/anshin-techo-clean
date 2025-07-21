@@ -20,11 +20,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-//カレンダー関連のルート
-Route::get('/records/calendar',[RecordController::class,'calendar'])->name('records.calendar');
-Route::get('/api/records/events', [RecordController::class, 'getCalendarEvents'])->name('api.records.events');
-//内服記録のリソース
-Route::resource('records', RecordController::class);
+    // ★★★ 最も具体的なルートを、リソースルートよりも先に定義する ★★★
+
+    // カレンダー表示ルート (records.calendar)
+    Route::get('/records/calendar', [RecordController::class, 'calendar'])->name('records.calendar');
+
+    // カレンダーイベントのAPIルート (records.getCalendarEvents)
+    // これが /records/{record} よりも先にマッチするようにする
+    Route::get('/records/events', [RecordController::class, 'getCalendarEvents'])->name('records.getCalendarEvents');
+
+    // 内服記録の完了状態をトグルするAPIルート
+    Route::post('/records/{record}/medications/{medication_id}/toggle-completion', [RecordController::class, 'toggleMedicationCompletionFromCalendar'])->name('records.toggleMedicationCompletionFromCalendar');
+
+    // records リソースルート (records/{record} のような動的なセグメントを含む一般的なルート)
+    // 上記の具体的なルートの後に配置する
+    Route::resource('records', RecordController::class);
 // 薬のリソースルート
 Route::resource('medications', MedicationController::class);
 // 服用タイミングのリソースルート

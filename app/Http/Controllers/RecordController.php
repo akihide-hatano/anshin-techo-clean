@@ -244,4 +244,83 @@ class RecordController extends Controller
     public function calendar(){
         return view('records.calendar');
     }
+
+      /**
+     * Get calendar events (medication records) for FullCalendar.
+     * このメソッドがAPIエンドポイントとして機能します。
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCalendarEvents(Request $request)
+    {
+        $user = Auth::user();
+
+        $start = Carbon::parse($request->input('start'));
+        $end = Carbon::parse($request->input('end'));
+
+        $records = Record::where('user_id', $user->id)
+                         ->whereBetween('taken_at', [$start, $end])
+                         ->with(['medications.pivot', 'timingTag'])
+                         ->get();
+
+        $events = [];
+
+        foreach ($records as $record) {
+            // ★★★ ここから追加/修正 ★★★
+            // その記録に未完了の薬があるかチェック
+            $recordHasUncompleted = $record->medications->contains(function ($medication) {
+                return !$medication->pivot->is_completed;
+            });
+
+            // イベントのタイトルに「⚪︎」または「×」を追加
+            $statusSymbol = $recordHasUncompleted ? '× ' : '⚪︎ '; // 未完了があれば×、全て完了なら⚪︎
+
+            // 記録全体としてイベントを作成（各薬ごとではなく、日ごとの記録として集約）
+            // 複数の薬がある場合でも、その日の記録全体として一つのイベントにするため、
+            // その日の最初の薬の情報を代表として使うか、または記録全体を表現するタイトルにします。
+            // ここでは、その記録の服用タイミングと状態をタイトルにします。
+            $title = $statusSymbol . $record->timingTag->timing_name;
+
+            // 各薬の詳細を説明に含める
+            $medicationDetails = $record->medications->map(function ($medication) {
+                $detail = $medication->medication_name;
+                if ($medication->pivot->taken_dosage) {
+                    $detail .= ' (' . $medication->pivot->taken_dosage . ')';
+                }
+                if (!$medication->pivot->is_completed) {
+                    $detail .= ' - 未完了';
+                    if ($medication->pivot->reason_not_taken) {
+                        $detail .= ' (' . $medication->pivot->reason_not_taken . ')';
+                    }
+                } else {
+                    $detail .= ' - 完了';
+                }
+                return $detail;
+            })->implode("\n"); // 各薬の詳細を改行で結合
+
+            $description = "服用記録:\n" . $medicationDetails;
+
+            // イベントの色を完了/未完了で変更 (これは以前のままでOK)
+            $color = $recordHasUncompleted ? '#FFC107' : '#4CAF50'; // 未完了があれば黄色、全て完了なら緑
+
+            $events[] = [
+                'id' => $record->record_id, // 記録IDをイベントIDとして使用
+                'title' => $title, // カレンダーに表示されるタイトル
+                'start' => $record->taken_at->toDateTimeString(), // イベントの開始日時
+                'extendedProps' => [ // カスタムデータ
+                    'description' => $description,
+                    'record_has_uncompleted' => $recordHasUncompleted, // 未完了フラグ
+                    'timing_name' => $record->timingTag->timing_name,
+                    'medication_details' => $medicationDetails, // 各薬の詳細
+                ],
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'url' => route('records.show', $record->record_id), // クリック時の遷移先URL
+            ];
+            // ★★★ 修正ここまで ★★★
+        }
+
+        return response()->json($events);
+    }
 }

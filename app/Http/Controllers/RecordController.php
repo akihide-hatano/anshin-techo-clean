@@ -236,8 +236,8 @@ class RecordController extends Controller
     {
         if( $record->user_id !== Auth::id()){
             abort(403,'記事削除の権限がありません。');
-         $record->delete();
-        return redirect()->route('records.index')->with('success', '内服記録が削除されました。');
         }
+            $record->delete();
+            return redirect()->route('records.index')->with('success', '内服記録が削除されました。');
     }
 }

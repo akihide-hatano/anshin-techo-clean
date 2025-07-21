@@ -37,12 +37,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Record::class, 'user_id', 'id');
     }
-
-    /**
-     * このユーザーに紐づく薬を取得 (Medicationモデルとのリレーション)
-     */
-    public function medications(): HasMany
-    {
-        return $this->hasMany(Medication::class, 'user_id', 'id');
-    }
 }

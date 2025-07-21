@@ -22,7 +22,12 @@ class Record extends Model
         'user_id',
         'taken_at',
         'timing_tag_id',
-        // 必要に応じて他のカラム
+    ];
+
+    protected $casts = [
+    'taken_at' => 'datetime', // これが重要
+    'created_at' => 'datetime',
+    'updated_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use function Ramsey\Uuid\v1;
 
@@ -245,82 +246,110 @@ class RecordController extends Controller
         return view('records.calendar');
     }
 
-      /**
+ /**
      * Get calendar events (medication records) for FullCalendar.
-     * このメソッドがAPIエンドポイントとして機能します。
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getCalendarEvents(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $start = Carbon::parse($request->input('start'));
-        $end = Carbon::parse($request->input('end'));
+            $start = Carbon::parse($request->input('start'));
+            $end = Carbon::parse($request->input('end'));
 
-        $records = Record::where('user_id', $user->id)
-                         ->whereBetween('taken_at', [$start, $end])
-                         ->with(['medications.pivot', 'timingTag'])
-                         ->get();
+            // ユーザーに紐づく、指定期間内の内服記録を取得
+            // medications と timingTag リレーションをEager Load
+            $records = Record::where('user_id', $user->id)
+                             ->whereBetween('taken_at', [$start, $end])
+                             ->with(['medications', 'timingTag'])
+                             ->get();
 
-        $events = [];
+            $dailyRecords = [];
 
-        foreach ($records as $record) {
-            // ★★★ ここから追加/修正 ★★★
-            // その記録に未完了の薬があるかチェック
-            $recordHasUncompleted = $record->medications->contains(function ($medication) {
-                return !$medication->pivot->is_completed;
-            });
-
-            // イベントのタイトルに「⚪︎」または「×」を追加
-            $statusSymbol = $recordHasUncompleted ? '× ' : '⚪︎ '; // 未完了があれば×、全て完了なら⚪︎
-
-            // 記録全体としてイベントを作成（各薬ごとではなく、日ごとの記録として集約）
-            // 複数の薬がある場合でも、その日の記録全体として一つのイベントにするため、
-            // その日の最初の薬の情報を代表として使うか、または記録全体を表現するタイトルにします。
-            // ここでは、その記録の服用タイミングと状態をタイトルにします。
-            $title = $statusSymbol . $record->timingTag->timing_name;
-
-            // 各薬の詳細を説明に含める
-            $medicationDetails = $record->medications->map(function ($medication) {
-                $detail = $medication->medication_name;
-                if ($medication->pivot->taken_dosage) {
-                    $detail .= ' (' . $medication->pivot->taken_dosage . ')';
+            // ★★★ ここから修正: 日付ごとに記録をグループ化し、完了状態を集約 ★★★
+            foreach ($records as $record) {
+                if (!$record->taken_at instanceof Carbon) {
+                    Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
+                    continue;
                 }
-                if (!$medication->pivot->is_completed) {
-                    $detail .= ' - 未完了';
-                    if ($medication->pivot->reason_not_taken) {
-                        $detail .= ' (' . $medication->pivot->reason_not_taken . ')';
-                    }
-                } else {
-                    $detail .= ' - 完了';
+
+                $date = $record->taken_at->toDateString(); // 'YYYY-MM-DD' 形式の日付文字列を取得
+
+                // その記録に未完了の薬が一つでもあれば true
+                $recordHasUncompleted = $record->medications->contains(function ($medication) {
+                    return !$medication->pivot->is_completed;
+                });
+
+                // 日付ごとの集約データを作成または更新
+                if (!isset($dailyRecords[$date])) {
+                    // その日の最初の記録であれば初期化
+                    $dailyRecords[$date] = [
+                        'date' => $date,
+                        'has_uncompleted_meds' => false, // 初期値は全て完了と仮定
+                        'record_ids' => [], // その日のレコードIDを保持
+                        'timing_names' => [], // その日の服用タイミング名を保持
+                    ];
                 }
-                return $detail;
-            })->implode("\n"); // 各薬の詳細を改行で結合
 
-            $description = "服用記録:\n" . $medicationDetails;
+                // その日のいずれかの記録に未完了の薬があれば、その日の総合ステータスを未完了にする
+                if ($recordHasUncompleted) {
+                    $dailyRecords[$date]['has_uncompleted_meds'] = true;
+                }
 
-            // イベントの色を完了/未完了で変更 (これは以前のままでOK)
-            $color = $recordHasUncompleted ? '#FFC107' : '#4CAF50'; // 未完了があれば黄色、全て完了なら緑
+                $dailyRecords[$date]['record_ids'][] = $record->record_id;
+                $dailyRecords[$date]['timing_names'][] = $record->timingTag ? $record->timingTag->timing_name : '不明';
+            }
 
-            $events[] = [
-                'id' => $record->record_id, // 記録IDをイベントIDとして使用
-                'title' => $title, // カレンダーに表示されるタイトル
-                'start' => $record->taken_at->toDateTimeString(), // イベントの開始日時
-                'extendedProps' => [ // カスタムデータ
-                    'description' => $description,
-                    'record_has_uncompleted' => $recordHasUncompleted, // 未完了フラグ
-                    'timing_name' => $record->timingTag->timing_name,
-                    'medication_details' => $medicationDetails, // 各薬の詳細
-                ],
-                'backgroundColor' => $color,
-                'borderColor' => $color,
-                'url' => route('records.show', $record->record_id), // クリック時の遷移先URL
-            ];
+            $events = [];
+
+            // 集約された日付ごとのデータからイベントを生成
+            foreach ($dailyRecords as $date => $dailyData) {
+                $statusSymbol = $dailyData['has_uncompleted_meds'] ? '×' : '⚪︎';
+                $color = $dailyData['has_uncompleted_meds'] ? '#FFC107' : '#4CAF50'; // 未完了があれば黄色、全て完了なら緑
+
+                // イベントのタイトルは「⚪︎」または「×」と、その日の服用タイミングの概要
+                // 例: ⚪︎ (朝食後, 夕食前)
+                $timingSummary = count($dailyData['timing_names']) > 1
+                               ? '(' . implode(', ', array_unique($dailyData['timing_names'])) . ')'
+                               : ($dailyData['timing_names'][0] ?? '記録あり'); // 1つだけならそのまま、なければ「記録あり」
+
+                $title = $statusSymbol . ' ' . $timingSummary;
+
+                // イベントのURLは、その日の最初の記録の詳細ページにリンクするか、
+                // またはその日の記録一覧ページ（もしあれば）にリンクするのが良いでしょう。
+                // ここでは、その日の最初のrecord_idにリンクします。
+                $firstRecordId = !empty($dailyData['record_ids']) ? $dailyData['record_ids'][0] : null;
+                $url = $firstRecordId ? route('records.show', $firstRecordId) : null;
+
+                $events[] = [
+                    'id' => $date, // 日付をイベントIDとして使用
+                    'title' => $title,
+                    'start' => $date, // 日付のみを設定
+                    'allDay' => true, // 終日イベントとして扱う
+                    'extendedProps' => [
+                        'date' => $date,
+                        'has_uncompleted_meds' => $dailyData['has_uncompleted_meds'],
+                        'record_ids' => $dailyData['record_ids'],
+                        'timing_names' => $dailyData['timing_names'],
+                        'description' => 'この日の服用記録: ' . implode(', ', array_unique($dailyData['timing_names'])) . ($dailyData['has_uncompleted_meds'] ? ' (未完了あり)' : ' (全て完了)'),
+                    ],
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'url' => $url,
+                ];
+            }
             // ★★★ 修正ここまで ★★★
-        }
 
-        return response()->json($events);
+            return response()->json($events);
+
+        } catch (Exception $e) {
+            Log::error('Error in RecordController@getCalendarEvents: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            return response()->json([], 500);
+        }
     }
 }

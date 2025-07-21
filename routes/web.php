@@ -35,9 +35,9 @@ Route::middleware('auth')->group(function () {
     // records リソースルート (records/{record} のような動的なセグメントを含む一般的なルート)
     // 上記の具体的なルートの後に配置する
     Route::resource('records', RecordController::class);
-// 薬のリソースルート
-Route::resource('medications', MedicationController::class);
-// 服用タイミングのリソースルート
-Route::resource('timingtags', TimingTagController::class);
+    // 薬のリソースルート
+    Route::resource('medications', MedicationController::class);
+    // 服用タイミングのリソースルート
+    Route::resource('timingtags', TimingTagController::class);
 
 require __DIR__.'/auth.php';

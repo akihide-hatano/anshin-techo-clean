@@ -1,4 +1,5 @@
 // resources/js/calendar.js
+
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -24,10 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
 
-        // ★★★ ここから修正 ★★★
         eventDidMount: function(info) {
             // イベントの色を、未完了の薬があるかどうかで設定
-            if (info.event.extendedProps.record_has_uncompleted === true) {
+            if (info.event.extendedProps.has_uncompleted_meds === true) { // extendedProps のキーを修正
                 info.el.style.backgroundColor = '#FFC107'; // 未完了があれば黄色
                 info.el.style.borderColor = '#FFC107';
             } else {
@@ -36,10 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // ツールチップとして詳細情報を表示
-            // title属性に追加することで、マウスオーバー時に表示される
             info.el.title = info.event.extendedProps.description;
         },
-        // ★★★ 修正ここまで ★★★
 
         dateClick: function(info) {
             const clickedDate = info.dateStr;
@@ -49,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 'auto',
         contentHeight: 'auto',
         aspectRatio: 2.0,
+        // ★★★ ここから追加 ★★★
+        eventDisplay: 'block', // イベントをブロックとして表示し、重なりを避ける
+        // ★★★ ここまで追加 ★★★
     });
 
     calendar.render();

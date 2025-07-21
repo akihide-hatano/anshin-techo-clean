@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+use function Ramsey\Uuid\v1;
+
 class RecordController extends Controller
 {
     /**
@@ -127,9 +129,15 @@ class RecordController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Record $record)
     {
-        //
+        //レコードの内容がuserであるか確認
+        if( $record->user_id !== Auth::id()){
+            abort(403,'記事の確認権限がありません');
+        }
+        $record->load(['medications','timingTag']);
+        dd($record);
+        return view('records.show',compact('record'));
     }
 
     /**

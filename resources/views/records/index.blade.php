@@ -77,8 +77,8 @@
                                                                 $reasonNotTaken = $medication->pivot->reason_not_taken;
                                                             @endphp
                                                             <span class="ml-2 font-bold"
-                                                                  data-is-completed="{{ $isCompleted ? 'true' : 'false' }}"
-                                                                  data-reason="{{ $reasonNotTaken ?? '' }}">
+                                                                data-is-completed="{{ $isCompleted ? 'true' : 'false' }}"
+                                                                data-reason="{{ $reasonNotTaken ?? '' }}">
                                                             </span>
                                                         </li>
                                                     @endforeach
@@ -89,11 +89,11 @@
                                     {{-- カードフッター（操作ボタン） --}}
                                     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end items-center space-x-2"> {{-- ボタン間のスペース --}}
                                         <a href="{{ route('records.show', $record->record_id) }}"
-                                           class="inline-flex items-center px-3 py-1.5 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-400 focus:bg-blue-400 active:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        class="inline-flex items-center px-3 py-1.5 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-400 focus:bg-blue-400 active:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                             {{ __('詳細') }}
                                         </a>
                                         <a href="{{ route('records.edit', $record->record_id) }}"
-                                           class="inline-flex items-center px-3 py-1.5 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        class="inline-flex items-center px-3 py-1.5 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-400 focus:bg-yellow-400 active:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                             {{ __('編集') }}
                                         </a>
                                         <form action="{{ route('records.destroy', $record->record_id) }}" method="POST" class="inline-block">
@@ -119,11 +119,6 @@
             </div>
         </div>
     </div>
-
     {{-- ★JavaScriptファイルを読み込む★ --}}
-    {{-- Vite (Laravel 9以降) を使用している場合 --}}
     @vite('resources/js/records-index.js')
-    {{-- Laravel Mix (Laravel 8以前) を使用している場合 --}}
-    {{-- <script src="{{ asset('js/records_index.js') }}" defer></script> --}}
-
 </x-app-layout>

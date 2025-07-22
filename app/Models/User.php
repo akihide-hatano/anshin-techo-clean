@@ -15,6 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     protected $hidden = [
@@ -37,4 +38,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Record::class, 'user_id', 'id');
     }
+
+    /**
+     * ユーザーが管理者かどうかをチェックするヘルパーメソッド
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * ユーザーが家族メンバーかどうかをチェックするヘルパーメソッド (例)
+     */
+    public function isFamilyMember(): bool
+    {
+        return $this->role === 'family';
+    }
+
 }

@@ -58,7 +58,7 @@ class User extends Authenticatable
     /**
      * このユーザーが持つFCMトークンを取得します。
      */
-    public function fcmTokens(): HasMany // ★このメソッドを追加★
+    public function fcmTokens(): HasMany
     {
         return $this->hasMany(FcmToken::class, 'user_id', 'id');
     }

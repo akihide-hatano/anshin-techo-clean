@@ -46,7 +46,7 @@
         const notificationTitle = notificationData.title || '通知'; // タイトルがなければデフォルトを設定
         const notificationOptions = {
             body: notificationData.body || '新しいメッセージがあります。', // 本文がなければデフォルトを設定
-            icon: notificationData.icon || '/favicon.ico', // 通知アイコンのパス (サイトのファビコンをデフォルトに)
+            // icon: notificationData.icon || '/favicon.ico', // 通知アイコンのパス (サイトのファビコンをデフォルトに)
             data: customData // 通知クリック時に使用するカスタムデータ
         };
 

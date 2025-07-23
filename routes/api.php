@@ -15,6 +15,12 @@ use App\Http\Controllers\FCMTokenController; // 追加
 |
 */
 
+// ★★★ ここから追加 ★★★
+Route::get('/test', function () {
+    return response()->json(['message' => 'Test API route works!']);
+});
+// ★★★ ここまで追加 ★★★
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

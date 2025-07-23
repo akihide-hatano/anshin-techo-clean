@@ -4,11 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Notification;
-use Kreait\Laravel\Firebase\Firebase;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Illuminate\Notifications\Channels\Channel;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Notifications\Notification as BaseNotification;
+use Kreait\Laravel\Firebase\Firebase; // 必要なuseステートメント
+use Kreait\Firebase\Messaging\CloudMessage; // 必要なuseステートメント
+use Illuminate\Notifications\Channels\Channel; // 必要なuseステートメント
+use Illuminate\Support\Facades\Log; // 必要なuseステートメント
+use App\Notifications\PushNotification; // ★★★ この行を追加 ★★★ (toFcmエラー解消のため)
+use Illuminate\Notifications\Notification as BaseNotification; // LaravelのNotificationクラスと名前衝突を避けるため
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void // ★★★ この行を追加（抜けていました） ★★★
+    public function boot(): void
     {
         // FCM通知チャネルを登録
         Notification::extend('fcm', function ($app) {
@@ -39,13 +40,16 @@ class AppServiceProvider extends ServiceProvider
                  * Send the given notification.
                  *
                  * @param  mixed  $notifiable
-                 * @param  \Illuminate\Notifications\Notification  $notification
+                 * @param  \Illuminate\Notifications\Notification  $notification // この行はコメントアウトまたは削除
                  * @return void
                  */
-                public function send($notifiable, BaseNotification $notification)
+                // ★★★ ここを修正 ★★★
+                public function send($notifiable, BaseNotification $notification) // BaseNotificationのままにして、toFcmのチェックを追加
                 {
-                    if (! method_exists($notification, 'toFcm')) {
-                        Log::warning('Notification does not have a toFcm method.');
+                    // sendメソッドに渡される$notificationがPushNotificationのインスタンスであることを期待
+                    // toFcmメソッドはPushNotificationクラスに存在するため、型チェックを行う
+                    if (!($notification instanceof PushNotification)) {
+                        Log::warning('Notification is not an instance of PushNotification. Cannot call toFcm method.');
                         return;
                     }
 
@@ -62,5 +66,5 @@ class AppServiceProvider extends ServiceProvider
                 }
             };
         });
-    } // ★★★ この閉じ括弧は、追加した public function boot(): void に対応します ★★★
+    }
 }

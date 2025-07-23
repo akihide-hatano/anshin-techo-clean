@@ -43,11 +43,8 @@ class AppServiceProvider extends ServiceProvider
                  * @param  \Illuminate\Notifications\Notification  $notification // この行はコメントアウトまたは削除
                  * @return void
                  */
-                // ★★★ ここを修正 ★★★
-                public function send($notifiable, BaseNotification $notification) // BaseNotificationのままにして、toFcmのチェックを追加
+                public function send($notifiable, BaseNotification $notification)
                 {
-                    // sendメソッドに渡される$notificationがPushNotificationのインスタンスであることを期待
-                    // toFcmメソッドはPushNotificationクラスに存在するため、型チェックを行う
                     if (!($notification instanceof PushNotification)) {
                         Log::warning('Notification is not an instance of PushNotification. Cannot call toFcm method.');
                         return;
@@ -58,6 +55,9 @@ class AppServiceProvider extends ServiceProvider
                     }
 
                     try {
+                        // ★★★ ここにログ出力の行を追加 ★★★
+                        Log::info('Attempting to send FCM message with payload: ' . json_encode($message->jsonSerialize()));
+
                         $this->messaging->send($message);
                         Log::info('FCM notification sent successfully.');
                     } catch (\Throwable $e) {

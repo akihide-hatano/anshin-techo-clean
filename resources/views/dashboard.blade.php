@@ -13,7 +13,7 @@
 
                     {{-- ★★★ ここから追加 ★★★ --}}
                     <div class="mt-4">
-                        <button id="enable-notifications" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button id="enable-notifications" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="window.requestNotificationPermission()">
                             プッシュ通知を有効にする
                         </button>
                         <p id="notification-status" class="mt-2 text-sm text-gray-600"></p>

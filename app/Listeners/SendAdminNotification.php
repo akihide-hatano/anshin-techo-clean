@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Listeners;
+
 use App\Events\MedicationMarkedUncompleted;
 use App\Models\User;
 use App\Models\FcmToken;
@@ -8,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
-use Kreait\Firebase\Factory;
+use Kreait\Firebase\Factory; // この行はそのまま
 
 class SendAdminNotification implements ShouldQueue
 {
@@ -19,9 +21,14 @@ class SendAdminNotification implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(Factory $firebaseFactory)
+    public function __construct() // ★ここを修正: 引数 (Factory $firebaseFactory) を削除★
     {
-        $this->firebaseFactory = $firebaseFactory;
+        // parent::__construct(); // 親のコンストラクタ呼び出しは不要になります
+        // ★★★ ここを修正 ★★★
+        // Firebase Factoryを初期化する際に、明示的にサービスアカウントのパスを指定します。
+        // env() ヘルパーで .env から FIREBASE_CREDENTIALS の値を取得します。
+        $this->firebaseFactory = (new Factory())->withServiceAccount(env('FIREBASE_CREDENTIALS'));
+        // ★★★ 修正ここまで ★★★
     }
 
     /**
@@ -32,6 +39,7 @@ class SendAdminNotification implements ShouldQueue
         Log::info('MedicationMarkedUncompleted event received. Sending admin notification via FCM.');
 
         try {
+            // ここでは $this->firebaseFactory を使ってMessagingインスタンスを作成
             $messaging = $this->firebaseFactory->createMessaging();
         } catch (\Exception $e) {
             Log::error('Firebase Messaging creation error in admin listener: ' . $e->getMessage());

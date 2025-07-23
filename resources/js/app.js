@@ -1,107 +1,115 @@
-import './bootstrap';
-import Alpine from 'alpinejs';
+
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging'; // Messagingサービスをインポート
 
-window.Alpine = Alpine;
-Alpine.start();
-
-// ★★★ ここから追加 ★★★
-
-// Firebase設定はBladeテンプレートからグローバル変数として渡される想定
-// resources/views/layouts/app.blade.php などで以下のように設定されているはず
-// <script>
-//     window.firebaseConfig = {
-//         apiKey: "{{ config('services.firebase.api_key') }}",
-//         authDomain: "{{ config('services.firebase.auth_domain') }}",
-//         projectId: "{{ config('services.firebase.project_id') }}",
-//         storageBucket: "{{ config('services.firebase.storage_bucket') }}",
-//         messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
-//         appId: "{{ config('services.firebase.app_id') }}",
-//         measurementId: "{{ config('services.firebase.measurement_id') }}"
-//     };
-// </script>
+// ★ここにFirebase ConsoleからコピーしたfirebaseConfigオブジェクトを貼り付ける★
+const firebaseConfig = {
+    apiKey: "AIzaSyBSsJCU6fRI6OLL2exCOiu1Oi30pPApOFQ",
+    authDomain: "anshin-techo-87769.firebaseapp.com",
+    projectId: "anshin-techo-87769",
+    storageBucket: "anshin-techo-87769.firebasestorage.app",
+    messagingSenderId: "174755315946",
+    appId: "1:174755315946:web:7f8db8b02fd7f4f7ff9793"
+};
 
 // Firebaseアプリを初期化
-const firebaseApp = initializeApp(window.firebaseConfig);
-const messaging = getMessaging(firebaseApp);
+const app = initializeApp(firebaseConfig);
+
+// Messagingサービスを取得
+const messaging = getMessaging(app);
 
 // Service Workerの登録パス
-const serviceWorkerPath = '/firebase-messaging-sw.js';
+const serviceWorkerRegistrationPath = '/firebase-messaging-sw.js'; // 後で作成するService Workerのパス
 
-// FCMトークンをバックエンドに送信する関数
+// FCMトークンをリクエストし、サーバーに送信する関数
+async function requestPermissionAndSaveToken() {
+    if (!('Notification' in window)) {
+        console.warn('このブラウザは通知に対応していません。');
+        return;
+    }
+
+    if (Notification.permission === 'granted') {
+        console.log('通知は既に許可されています。');
+        getAndSaveToken();
+        return;
+    }
+
+    if (Notification.permission === 'denied') {
+        console.warn('通知は拒否されています。設定から変更してください。');
+        return;
+    }
+
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('通知が許可されました。');
+            getAndSaveToken();
+        } else {
+            console.warn('通知が拒否されました。');
+        }
+    } catch (error) {
+        console.error('通知許可のリクエスト中にエラーが発生しました:', error);
+    }
+}
+
+// FCMトークンを取得し、Laravelバックエンドに送信する関数
+async function getAndSaveToken() {
+    try {
+        const currentToken = await getToken(messaging, { vapidKey: 'BLIX_vYgDfl7y0m5Nu6o6Tb1DapKXSk9ZMZOAnbVwrTdH0HWfzD4PbfZGUCu3ElmsYElaMpG5N0yWyAZxiSTAAQ', serviceWorkerRegistration: await navigator.serviceWorker.register(serviceWorkerRegistrationPath) });
+
+        if (currentToken) {
+            console.log('FCMトークン:', currentToken);
+            // Laravelバックエンドにトークンを送信
+            await sendTokenToServer(currentToken);
+        } else {
+            console.warn('FCMトークンを取得できませんでした。');
+        }
+    } catch (error) {
+        console.error('FCMトークンの取得または保存中にエラーが発生しました:', error);
+    }
+}
+
+// FCMトークンをLaravelバックエンドに送信する関数
 async function sendTokenToServer(token) {
     try {
         const response = await fetch('/api/fcm-token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRFトークンをヘッダーに含める
             },
             body: JSON.stringify({ token: token })
         });
 
         if (response.ok) {
-            console.log('FCMトークンがサーバーに正常に送信されました。');
-            document.getElementById('notification-status').textContent = 'プッシュ通知が有効になりました！';
+            console.log('FCMトークンがサーバーに正常に保存されました。');
         } else {
             const errorData = await response.json();
-            console.error('FCMトークンのサーバー送信に失敗しました:', errorData);
-            document.getElementById('notification-status').textContent = 'プッシュ通知の有効化に失敗しました。';
+            console.error('FCMトークンのサーバー保存に失敗しました:', errorData);
         }
     } catch (error) {
-        console.error('FCMトークンのサーバー送信中にエラーが発生しました:', error);
-        document.getElementById('notification-status').textContent = 'エラーが発生しました。';
+        console.error('FCMトークン送信中にネットワークエラーが発生しました:', error);
     }
 }
 
-// プッシュ通知を有効にする処理
+// アプリケーションがロードされたときに実行
 document.addEventListener('DOMContentLoaded', () => {
+    // 例: ボタンクリックで通知許可をリクエスト
     const enableNotificationsButton = document.getElementById('enable-notifications');
-    const notificationStatus = document.getElementById('notification-status');
-
     if (enableNotificationsButton) {
-        enableNotificationsButton.addEventListener('click', async () => {
-            notificationStatus.textContent = '通知を有効化中...';
-            try {
-                // 通知許可を要求
-                const permission = await Notification.requestPermission();
-
-                if (permission === 'granted') {
-                    console.log('通知の許可が与えられました。');
-
-                    // Service Workerを登録
-                    const registration = await navigator.serviceWorker.register(serviceWorkerPath);
-                    console.log('Service Workerが登録されました:', registration);
-
-                    // FCMトークンを取得
-                    const currentToken = await getToken(messaging, { serviceWorkerRegistration: registration });
-
-                    if (currentToken) {
-                        console.log('FCMトークン:', currentToken);
-                        await sendTokenToServer(currentToken);
-                    } else {
-                        console.warn('FCMトークンを取得できませんでした。');
-                        notificationStatus.textContent = 'FCMトークンを取得できませんでした。';
-                    }
-                } else {
-                    console.warn('通知が拒否されました。');
-                    notificationStatus.textContent = '通知が拒否されました。';
-                }
-            } catch (error) {
-                console.error('プッシュ通知の有効化中にエラーが発生しました:', error);
-                notificationStatus.textContent = 'エラーが発生しました。詳細はコンソールを確認してください。';
-            }
-        });
+        enableNotificationsButton.addEventListener('click', requestPermissionAndSaveToken);
     }
-});
 
-// フォアグラウンドでのメッセージ受信処理 (任意)
-onMessage(messaging, (payload) => {
-    console.log('フォアグラウンドでメッセージを受信しました:', payload);
-    // ここで受信したメッセージをUIに表示するなどの処理を追加できます
-    alert('新しい通知: ' + payload.notification.title + ' - ' + payload.notification.body);
+    // フォアグラウンドでのメッセージ受信
+    onMessage(messaging, (payload) => {
+        console.log('フォアグラウンドでメッセージを受信しました:', payload);
+        // ここで独自の通知表示ロジックを実装できます
+        // 例: 新しい通知を表示
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+            body: payload.notification.body,
+            icon: '/path/to/your/icon.png' // 通知アイコンのパス
+        };
+        new Notification(notificationTitle, notificationOptions);
+    });
 });
-
-// ★★★ ここまで追加 ★★★

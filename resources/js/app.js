@@ -1,6 +1,8 @@
+import './bootstrap'; // 既存の行があれば残す
 
+// npmでインストールしたFirebaseモジュールをインポート
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging'; // Messagingサービスをインポート
+import { getMessaging, getToken, onMessage } from 'firebase/messaging'; // Messaging関連の関数をインポート
 
 // ★ここにFirebase ConsoleからコピーしたfirebaseConfigオブジェクトを貼り付ける★
 const firebaseConfig = {
@@ -55,7 +57,11 @@ async function requestPermissionAndSaveToken() {
 // FCMトークンを取得し、Laravelバックエンドに送信する関数
 async function getAndSaveToken() {
     try {
-        const currentToken = await getToken(messaging, { vapidKey: 'BLIX_vYgDfl7y0m5Nu6o6Tb1DapKXSk9ZMZOAnbVwrTdH0HWfzD4PbfZGUCu3ElmsYElaMpG5N0yWyAZxiSTAAQ', serviceWorkerRegistration: await navigator.serviceWorker.register(serviceWorkerRegistrationPath) });
+        // Service Workerの登録をここで行う
+        const registration = await navigator.serviceWorker.register(serviceWorkerRegistrationPath);
+        // messaging.useServiceWorker(registration); // 新しいSDKでは不要な場合が多い
+
+        const currentToken = await getToken(messaging, { vapidKey: 'BLIX_vYgDfl7y0m5Nu6o6Tb1DapKXSk9ZMZOAnbVwrTdH0HWfzD4PbfZGUCu3ElmsYElaMpG5N0yWyAZxiSTAAQ', serviceWorkerRegistration: registration });
 
         if (currentToken) {
             console.log('FCMトークン:', currentToken);
@@ -108,7 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const notificationTitle = payload.notification.title;
         const notificationOptions = {
             body: payload.notification.body,
-            icon: '/path/to/your/icon.png' // 通知アイコンのパス
+            icon: payload.notification.icon || '/favicon.ico', // 通知アイコンのパス
+            data: payload.data
         };
         new Notification(notificationTitle, notificationOptions);
     });

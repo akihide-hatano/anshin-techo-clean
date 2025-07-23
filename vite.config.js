@@ -11,19 +11,26 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
-                // entryFileNames は、JavaScriptのエントリーポイントファイルの出力名を制御します。
-                // firebase-messaging-sw.js の場合、ビルド時にそのままの名前で出力されるようにします。
                 entryFileNames: (chunkInfo) => {
-                    if (chunkInfo.name === 'firebase-messaging-sw') { // chunkInfo.name は 'firebase-messaging-sw' になります
+                    if (chunkInfo.name === 'firebase-messaging-sw') {
                         return 'firebase-messaging-sw.js';
                     }
-                    return `assets/[name]-[hash].js`; // その他のJSファイルは通常通り assets/ 以下に
+                    return `assets/[name]-[hash].js`;
                 },
-                // assetFileNames は、CSSや画像などのアセットファイルの出力名を制御します。
-                // Service WorkerはJSファイルなので、通常は entryFileNames で制御されますが、
-                // 念のため assetFileNames も含めておくとより確実です。
                 assetFileNames: `assets/[name]-[hash].[ext]`,
             },
         },
     },
+    // ★★★ ここから追加/修正 ★★★
+    // server: {
+    //     host: '0.0.0.0', // Dockerコンテナ内で全てのネットワークインターフェースからの接続を許可
+    //     hmr: {
+    //         host: 'localhost', // ブラウザがWebSocket接続を試みるホスト名
+    //         clientPort: 5173,  // Viteのデフォルトポート (明示的に指定)
+    //     },
+    //     watch: {
+    //         usePolling: true // ホットリロードが不安定な場合に試す
+    //     }
+    // }
+    // ★★★ ここまで追加/修正 ★★★
 });

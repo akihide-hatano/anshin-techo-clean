@@ -55,4 +55,12 @@ class User extends Authenticatable
         return $this->role === 'family';
     }
 
+    /**
+     * このユーザーが持つFCMトークンを取得します。
+     */
+    public function fcmTokens(): HasMany // ★このメソッドを追加★
+    {
+        return $this->hasMany(FcmToken::class, 'user_id', 'id');
+    }
+
 }

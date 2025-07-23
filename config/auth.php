@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+    'sanctum' => [ // ★★★ このsanctumガードブロックがあるか確認し、なければ追加 ★★★
+        'driver' => 'sanctum',
+        'provider' => 'users', // 通常は'users'ですが、UserモデルのProvider名に合わせてください
+    ],
     ],
 
     /*

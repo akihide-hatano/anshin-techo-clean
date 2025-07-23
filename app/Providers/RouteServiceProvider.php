@@ -17,13 +17,18 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/dashboard'; // またはあなたが設定したいリダイレクト先
+    public const HOME = '/dashboard';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
     {
+        // ★★★ ここから追加 ★★★
+        \Illuminate\Support\Facades\Log::info('RouteServiceProvider boot method is called.');
+        dd('RouteServiceProvider boot method is called.'); // 処理を停止して確認
+        // ★★★ ここまで追加 ★★★
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

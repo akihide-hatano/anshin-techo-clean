@@ -24,20 +24,12 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ★★★ ここから追加 ★★★
-        \Illuminate\Support\Facades\Log::info('RouteServiceProvider boot method is called.');
-        dd('RouteServiceProvider boot method is called.'); // 処理を停止して確認
-        // ★★★ ここまで追加 ★★★
 
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
-
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });

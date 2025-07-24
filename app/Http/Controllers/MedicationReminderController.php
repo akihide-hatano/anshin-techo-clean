@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MedicationReminderController extends Controller
 {
-    public function mardAsRead( MedicationReminder $medicationReminder){
+    public function markAsRead( MedicationReminder $medicationReminder){
 
     if( $medicationReminder->user_id !== Auth::id()){
             abort(403,'権限がありません');

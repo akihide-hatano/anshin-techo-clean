@@ -6,12 +6,12 @@ use App\Http\Controllers\MedicationController;
 use App\Http\Controllers\TimingTagController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MedicationReminderController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// ★ここを修正★
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -19,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+    //内服の通知に関するrouteを作成。
+    Route::patch('/medication-reminders/{medicationReminder}/mark-as-read', [MedicationReminderController::class, 'markAsRead'])->name('medication-reminders.mark-as-read');
 
     // ★★★ 最も具体的なルートを、リソースルートよりも先に定義する ★★★
 

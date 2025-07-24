@@ -11,11 +11,26 @@
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in!") }}
 
-                    <div class="mt-4">
-                        <button id="enable-notifications" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            プッシュ通知を有効にする
-                        </button>
-                        <p id="notification-status" class="mt-2 text-sm text-gray-600"></p>
+                    {{-- ★★★ ここから通知表示のコードを追加 ★★★ --}}
+                    <div class="mt-8">
+                        <h3 class="text-lg font-medium text-gray-900">最近の内服忘れ通知</h3>
+                        @if ($medicationReminders->isEmpty())
+                            <p class="mt-2 text-gray-600">最近の内服忘れの記録はありません。</p>
+                        @else
+                            <ul class="mt-2 space-y-2">
+                                @foreach ($medicationReminders as $reminder)
+                                    <li class="p-3 bg-red-50 border border-red-200 rounded-md">
+                                        <p class="text-red-800">{{ $reminder->message }}</p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $reminder->created_at->format('Y年m月d日 H時i分') }}に記録
+                                            @if (!$reminder->is_read)
+                                                <span class="ml-2 px-2 py-0.5 text-xs font-semibold text-red-700 bg-red-200 rounded-full">未読</span>
+                                            @endif
+                                        </p>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>

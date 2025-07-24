@@ -23,7 +23,6 @@ class DashboardController extends Controller
                                                 ->orderBy('created_at', 'desc')
                                                 ->limit(5) // 例: 最新5件に制限
                                                 ->get();
-
         // ビューにデータを渡して表示
         return view('dashboard', compact('medicationReminders'));
     }

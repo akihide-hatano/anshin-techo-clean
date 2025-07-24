@@ -36,14 +36,14 @@
                                                     <span class="ml-2 px-2 py-0.5 text-xs font-semibold text-red-700 bg-red-200 rounded-full">未読</span>
                                                 @endif
                                             </span>
-                                            {{-- 既読にするボタン (以前追加したもの)
+                                            {{-- 既読にするボタン (以前追加したもの) --}}
                                             @if (!$reminder->is_read)
                                                 <form action="{{ route('medication-reminders.mark-as-read', $reminder->id) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
                                                     <button type="submit" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium ml-4">既読にする</button>
                                                 </form>
-                                            @endif --}}
+                                            @endif
                                         </p>
                                     </li>
                                 @endforeach

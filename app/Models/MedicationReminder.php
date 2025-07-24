@@ -12,6 +12,7 @@ class MedicationReminder extends Model
 
     protected $fillable = [
         'user_id',
+        'record_id',
         'patient_name',
         'event_type',
         'message',

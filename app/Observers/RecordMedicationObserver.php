@@ -56,13 +56,13 @@ class RecordMedicationObserver
 
             // ★★★ ここにdd()を追加 ★★★
             // MedicationReminder に渡されるデータを確認
-            dd([
-                'user_id' => $user->id,
-                'record_id' => $record->record_id,
-                'patient_name' => $patientName,
-                'event_type' => 'forgotten_medication',
-                'message' => "{$patientName}さんの内服忘れが記録されました。",
-            ]);
+            // dd([
+            //     'user_id' => $user->id,
+            //     'record_id' => $record->record_id,
+            //     'patient_name' => $patientName,
+            //     'event_type' => 'forgotten_medication',
+            //     'message' => "{$patientName}さんの内服忘れが記録されました。",
+            // ]);
             // ★★★ dd()追加ここまで ★★★
 
             MedicationReminder::create([

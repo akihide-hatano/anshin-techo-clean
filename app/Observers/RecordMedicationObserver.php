@@ -5,6 +5,9 @@ namespace App\Observers;
 use App\Models\MedicationReminder; // 通知を保存するモデル
 use App\Models\RecordMedication;   // イベントを検知するモデル
 use Illuminate\Support\Facades\Log; // デバッグ用にLogファサードを追加
+use Illuminate\Support\Facades\Mail;
+use App\mail\MedicationUncompletedMail;
+use App\Models\Medication;
 use App\Models\Record; // ★追加: Record モデルを使用するため
 
 class RecordMedicationObserver
@@ -19,8 +22,18 @@ class RecordMedicationObserver
 
         // 新しく記録された内服薬が未完了の場合
         if (!$recordMedication->is_completed) {
-            $this->createMedicationReminder($recordMedication);
-            Log::info('MedicationReminder created for uncompleted medication.');
+            MedicationReminder::create([
+                'user_id'=> $recordMedication->record->user_id,
+                'record_id'=> $recordMedication->record_id,
+                'message' => '【内服忘れ】' . $recordMedication->medication->medication_name . 'の服用が未完了です。',
+                'is_read' => false,
+            ]);
+        
+        $user = $recordMedication->record->user;
+            if ($user && $user->notification_email) {
+                Mail::to($user->notification_email)->send(new MedicationUncompletedMail($recordMedication->record, $user));
+                Log::info('Notification email sent to: ' . $user->notification_email);
+            }
         }
     }
 

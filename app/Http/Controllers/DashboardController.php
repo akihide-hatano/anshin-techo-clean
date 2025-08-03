@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MedicationReminder; // 追加
+use App\Models\Record;
 use Illuminate\Support\Facades\Auth; // 追加
 
 class DashboardController extends Controller
@@ -23,7 +24,14 @@ class DashboardController extends Controller
                                                 ->orderBy('created_at', 'desc')
                                                 ->limit(5) // 例: 最新5件に制限
                                                 ->get();
+
+        //ログインユーザーの本日の内服薬記録を取得
+        $todayRecords = Record::with(['medication','timingtag'])
+                        ->where('user_id',$userId)
+                        ->whereData('created_at',today())
+                        ->get();
+
         // ビューにデータを渡して表示
-        return view('dashboard', compact('medicationReminders'));
+        return view('dashboard', compact('medicationReminders','todayRecords'));
     }
 }

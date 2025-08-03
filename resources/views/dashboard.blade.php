@@ -21,6 +21,36 @@
                 <div class="p-6 text-gray-700">
                     {{ __("ログイン中です！") }}
 
+                    {{-- ここから新しいボタンを追加 --}}
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                        <a href="{{ route('medications.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
+<svg  class="bg-white"    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M128 176C128 149.5 149.5 128 176 128C202.5 128 224 149.5 224 176L224 288L128 288L128 176zM240 432C240 383.3 258.1 338.8 288 305L288 176C288 114.1 237.9 64 176 64C114.1 64 64 114.1 64 176L64 464C64 525.9 114.1 576 176 576C213.3 576 246.3 557.8 266.7 529.7C249.7 501.1 240 467.7 240 432zM304.7 499.4C309.3 508.1 321 509.1 328 502.1L502.1 328C509.1 321 508.1 309.3 499.4 304.7C479.3 294 456.4 288 432 288C352.5 288 288 352.5 288 432C288 456.3 294 479.3 304.7 499.4zM361.9 536C354.9 543 355.9 554.7 364.6 559.3C384.7 570 407.6 576 432 576C511.5 576 576 511.5 576 432C576 407.7 570 384.7 559.3 364.6C554.7 355.9 543 354.9 536 361.9L361.9 536z"/></svg>
+                            内服薬を登録
+                        </a>
+                        <a href="{{ route('timingtags.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+
+                            服薬タイミングを登録
+                        </a>
+                        {{-- records.show は、内服忘れ通知のリンクで対応するため、ここでは省略 --}}
+                        {{-- medications.show, timings.show は、一覧ページを作成してそこに配置するのが一般的です --}}
+                    </div>
+
+                    {{-- ここから新しいボタンを追加 --}}
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
+                            内服薬の一覧
+                        </a>
+                        <a href="{{ route('timingtags.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+                            服薬タイミングの一覧
+                        </a>
+                    </div>
+                    {{-- 新しいボタンの追加ここまで --}}
+
+                    {{-- 新しいボタンの追加ここまで --}}
+
                     <div class="mt-8">
                         <h3 class="text-lg font-bold text-gray-700">最近の内服忘れ通知</h3>
                         @if ($medicationReminders->isEmpty())

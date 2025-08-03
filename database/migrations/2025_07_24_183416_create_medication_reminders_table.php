@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('record_id')->nullable()->constrained('records', 'record_id')->onDelete('cascade');
             $table->string('patient_name')->nullable();
-            $table->string('event_type');
+            $table->string('event_type')->nullable();
             $table->text('message')->nullable();
             $table->boolean('is_read')->default(false);
             $table->timestamps();

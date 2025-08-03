@@ -45,7 +45,7 @@ Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬
 
 | 技術 | 用途 | 理由 |
 |------|------|------|
-| **Laravel 11** | バックエンド | RESTfulな構造と、Mail・Schedule機能の柔軟性が高い。 |
+| **Laravel 12** | バックエンド | RESTfulな構造と、Mail・Schedule機能の柔軟性が高い。 |
 | **Blade + JavaScript** | フロントエンド | Laravelと親和性が高く、最小限の構成で動的UIを実現。 |
 | **Vite** | ビルドツール | モダンな開発環境を即時反映で実現。 |
 | **Tailwind CSS** | UIスタイリング | コンポーネントを素早く整形でき、保守性が高い。 |
@@ -74,4 +74,18 @@ cd anshin-techo-clean
 # 依存関係をインストール
 sail composer install
 sail npm install
+```
+
+```bash
+# 環境ファイルの準備
+cp .env.example .env
+```
+
+```bash
+# マイグレーション + シーディング
+sail artisan migrate:fresh --seed
+
+```bash
+# アプリケーションにアクセス
+ブラウザで http://localhost にアクセスしてください。
 ```

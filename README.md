@@ -1,61 +1,75 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://github.com/your-username/anshin-techo-clean"><img src="https://img.shields.io/badge/Project-Anshin--Techo-blue.svg" alt="Project Name"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Laravel Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+About Anshin-Techo
+「安心手帳」は、高齢者の内服記録を家族が遠隔で管理し、内服忘れを通知するウェブアプリケーションです。内服状況をリアルタイムで把握し、内服忘れがあった際には家族にメールで通知することで、服薬コンプライアンスの向上と家族の安心をサポートします。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+主な機能
+内服記録の管理: 内服状況を記録し、ダッシュボードで一目で確認できます。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+内服忘れ通知: 内服記録が未完了の場合、登録されたメールアドレスに通知を送信します。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+家族間での共有: 家族メンバーが内服記録を共有し、協力して管理できます。
 
-## Learning Laravel
+Technical Stack
+Backend: Laravel 11 (PHP)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Frontend: JavaScript, Vite, Tailwind CSS
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Database: PostgreSQL (Docker Sail)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Container: Docker
 
-## Laravel Sponsors
+Mail Testing: Mailpit
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Development Setup
+プロジェクトをローカルで実行するには、以下の手順に従ってください。
 
-### Premium Partners
+リポジトリをクローンする
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Bash
 
-## Contributing
+git clone https://github.com/your-username/anshin-techo-clean.git
+cd anshin-techo-clean
+Dockerコンテナを起動する
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Bash
 
-## Code of Conduct
+./vendor/bin/sail up -d
+依存関係をインストールする
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Bash
 
-## Security Vulnerabilities
+sail composer install
+sail npm install
+環境設定ファイルを準備する
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Bash
 
-## License
+cp .env.example .env
+データベースのマイグレーションとシードの実行
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Bash
+
+sail artisan migrate:fresh --seed
+Viteのビルド
+
+Bash
+
+sail npm run build
+アプリケーションにアクセス
+ブラウザで http://localhost にアクセスしてください。
+
+Roadmap
+家族メンバー機能: 複数の家族メンバーがユーザーの記録を管理できる機能。
+
+通知の送信先の拡張: ダッシュボードや複数のメールアドレスへの通知送信。
+
+通知の多様化: 内服切れやバイタルサインの異常など、内服忘れ以外の通知機能。
+
+プッシュ通知: スマートフォンアプリへのリアルタイム通知。

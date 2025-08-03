@@ -52,8 +52,7 @@
             @foreach ($todayRecords as $record)
                 <div class="p-4 rounded-lg shadow-sm bg-white border border-gray-200">
                     <p class="text-gray-800 font-bold">
-                        服用時間: {{ $record->created_at->format('H:i') }}
-                        （タイミング：{{ $record->timingtag->timng_name }}）
+                        内服のタイミング：{{ $record->timingtag->timing_name }}
                     </p>
                     <ul class="mt-2 space-y-1 ml-4 list-disc list-inside text-gray-700">
                         @foreach ($record->medications as $medication)

@@ -84,6 +84,7 @@ cp .env.example .env
 ```bash
 # マイグレーション + シーディング
 sail artisan migrate:fresh --seed
+```
 
 ```bash
 # アプリケーションにアクセス

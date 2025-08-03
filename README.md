@@ -63,7 +63,15 @@ Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬
 # リポジトリをクローン
 git clone https://github.com/your-username/anshin-techo-clean.git
 cd anshin-techo-clean
+```
 
 ```bash
 # Dockerコンテナを起動
 ./vendor/bin/sail up -d
+```
+
+```bash
+# 依存関係をインストール
+sail composer install
+sail npm install
+```

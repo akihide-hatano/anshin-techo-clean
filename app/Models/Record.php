@@ -35,7 +35,7 @@ class Record extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function timingTag(): BelongsTo
+    public function timingtag(): BelongsTo
     {
         return $this->belongsTo(TimingTag::class, 'timing_tag_id', 'timing_tag_id');
     }

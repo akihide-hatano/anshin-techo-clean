@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\MedicationReminder; // 追加
+use App\Models\MedicationReminder;
 use App\Models\Record;
-use Illuminate\Support\Facades\Auth; // 追加
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -26,9 +26,9 @@ class DashboardController extends Controller
                                                 ->get();
 
         //ログインユーザーの本日の内服薬記録を取得
-        $todayRecords = Record::with(['medication','timingtag'])
+        $todayRecords = Record::with(['medications','timingtag'])
                         ->where('user_id',$userId)
-                        ->whereData('created_at',today())
+                        ->whereDate('created_at',today())
                         ->get();
 
         // ビューにデータを渡して表示

@@ -45,6 +45,12 @@
                         </a>
                     </div>
 
+@if ($todayRecords)
+    <p class="text-green-600">本日は内服を記録済みです。</p>
+@else
+    <p class="text-red-600">本日の内服はまだ記録されていません。</p>
+@endif
+
                     <div class="mt-8">
                         <h3 class="text-lg font-bold text-gray-700">最近の内服忘れ通知</h3>
                         @if ($medicationReminders->isEmpty())

@@ -2,94 +2,70 @@
 
 namespace App\Observers;
 
-use App\Models\MedicationReminder; // 通知を保存するモデル
-use App\Models\RecordMedication;   // イベントを検知するモデル
-use Illuminate\Support\Facades\Log; // デバッグ用にLogファサードを追加
+use App\Models\MedicationReminder;
+use App\Models\RecordMedication;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\mail\MedicationUncompletedMail;
-use App\Models\Medication;
-use App\Models\Record; // ★追加: Record モデルを使用するため
+use App\Mail\MedicationUncompletedMail;
+use App\Models\Record;
 
 class RecordMedicationObserver
 {
     /**
      * Handle the RecordMedication "created" event.
-     * RecordMedication が新しくデータベースに作成されたときに実行されます。
      */
     public function created(RecordMedication $recordMedication): void
     {
         Log::info('RecordMedication created event fired. is_completed: ' . ($recordMedication->is_completed ? 'true' : 'false'));
 
-        // 新しく記録された内服薬が未完了の場合
         if (!$recordMedication->is_completed) {
+            $this->handleUncompletedMedication($recordMedication);
+        }
+    }
+
+    /**
+     * 内服未完了時の処理
+     * @param RecordMedication $recordMedication
+     * @return void
+     */
+    protected function handleUncompletedMedication(RecordMedication $recordMedication): void
+    {
+        try {
+            $record = $recordMedication->record;
+            if (!$record) {
+                Log::error('Record not found for RecordMedication ID: ' . $recordMedication->id);
+                return;
+            }
+
+            $user = $record->user;
+            if (!$user) {
+                Log::error('User not found for Record ID: ' . $record->id);
+                return;
+            }
+
+            // 内服忘れ通知を保存 (ダッシュボード用)
             MedicationReminder::create([
-                'user_id'=> $recordMedication->record->user_id,
-                'record_id'=> $recordMedication->record_id,
+                'user_id' => $user->id,
+                'record_id' => $record->id,
                 'message' => '【内服忘れ】' . $recordMedication->medication->medication_name . 'の服用が未完了です。',
                 'is_read' => false,
             ]);
-        
-        $user = $recordMedication->record->user;
-            if ($user && $user->notification_email) {
-                Mail::to($user->notification_email)->send(new MedicationUncompletedMail($recordMedication->record, $user));
+            Log::info('MedicationReminder created for uncompleted medication.');
+
+            // メール送信
+            if ($user->notification_email) {
+                Mail::to($user->notification_email)->send(new MedicationUncompletedMail($record, $user));
                 Log::info('Notification email sent to: ' . $user->notification_email);
             }
+        } catch (\Exception $e) {
+            Log::error('Failed to handle uncompleted medication: ' . $e->getMessage());
         }
     }
 
     /**
      * Handle the RecordMedication "updated" event.
-     * RecordMedication がデータベースで更新されたときに実行されます。
      */
     public function updated(RecordMedication $recordMedication): void
     {
-        // 今回の要件は「新しく作成された場合」に焦点を当てるため、updatedイベントは一旦シンプルに。
-        // もし「完了から未完了に変わった場合」も通知したいなら、このロジックを調整します。
-    }
-
-    /**
-     * MedicationReminder を作成するヘルパーメソッド
-     */
-    protected function createMedicationReminder(RecordMedication $recordMedication): void
-    {
-        try {
-            // RecordMedication は Record に属しているはずなので、まず Record を取得
-            $record = $recordMedication->record;
-
-            if (!$record) {
-                Log::error('Record not found for RecordMedication ID: ' . $recordMedication->record_medication_id);
-                return; // Record がなければ通知は作成しない
-            }
-
-            // Record に関連付けられた User を取得
-            $user = $record->user;
-
-            // 患者名を取得（Record モデルに patient_name がない場合は User モデルの name を使う）
-            $patientName = $record->patient_name ?? $user->name ?? '不明な患者';
-
-            // ★★★ ここにdd()を追加 ★★★
-            // MedicationReminder に渡されるデータを確認
-            // dd([
-            //     'user_id' => $user->id,
-            //     'record_id' => $record->record_id,
-            //     'patient_name' => $patientName,
-            //     'event_type' => 'forgotten_medication',
-            //     'message' => "{$patientName}さんの内服忘れが記録されました。",
-            // ]);
-            // ★★★ dd()追加ここまで ★★★
-
-            MedicationReminder::create([
-                'user_id' => $user->id,
-                'record_id' => $record->record_id, // ★ここを追加
-                'patient_name' => $patientName,
-                'event_type' => 'forgotten_medication',
-                'message' => "{$patientName}さんの内服忘れが記録されました。", // メッセージ本文もここで生成
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Failed to create MedicationReminder: ' . $e->getMessage());
-            Log::error('RecordMedication ID: ' . $recordMedication->record_medication_id);
-            Log::error('Error message: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-        }
     }
 }

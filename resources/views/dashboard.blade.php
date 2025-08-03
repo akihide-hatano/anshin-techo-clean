@@ -45,11 +45,35 @@
                         </a>
                     </div>
 
-@if ($todayRecords)
-    <p class="text-green-600">本日は内服を記録済みです。</p>
-@else
-    <p class="text-red-600">本日の内服はまだ記録されていません。</p>
-@endif
+<div class="mt-8">
+    <h3 class="text-lg font-bold text-gray-700">本日の内服記録</h3>
+    @if ($todayRecords->isNotEmpty())
+        <div class="mt-2 space-y-4">
+            @foreach ($todayRecords as $record)
+                <div class="p-4 rounded-lg shadow-sm bg-white border border-gray-200">
+                    <p class="text-gray-800 font-bold">
+                        服用時間: {{ $record->created_at->format('H:i') }}
+                        （タイミング：{{ $record->timingtag->name }}）
+                    </p>
+                    <ul class="mt-2 space-y-1 ml-4 list-disc list-inside text-gray-700">
+                        @foreach ($record->medications as $medication)
+                            <li class="flex items-center space-x-2">
+                                <span>{{ $medication->name }} - {{ $medication->pivot->taken_dosage }}錠</span>
+                                @if ($medication->pivot->is_completed)
+                                    <span class="text-green-600 font-semibold">（服用済み）</span>
+                                @else
+                                    <span class="text-red-600 font-semibold">（未服用）</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p class="mt-2 text-gray-500">本日の内服記録はまだありません。</p>
+    @endif
+</div>
 
                     <div class="mt-8">
                         <h3 class="text-lg font-bold text-gray-700">最近の内服忘れ通知</h3>

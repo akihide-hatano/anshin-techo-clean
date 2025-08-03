@@ -53,12 +53,12 @@
                 <div class="p-4 rounded-lg shadow-sm bg-white border border-gray-200">
                     <p class="text-gray-800 font-bold">
                         服用時間: {{ $record->created_at->format('H:i') }}
-                        （タイミング：{{ $record->timingtag->name }}）
+                        （タイミング：{{ $record->timingtag->timng_name }}）
                     </p>
                     <ul class="mt-2 space-y-1 ml-4 list-disc list-inside text-gray-700">
                         @foreach ($record->medications as $medication)
                             <li class="flex items-center space-x-2">
-                                <span>{{ $medication->name }} - {{ $medication->pivot->taken_dosage }}錠</span>
+                            <span>{{ $medication->medication_name }} - {{ $medication->pivot->taken_dosage }}錠</span>
                                 @if ($medication->pivot->is_completed)
                                     <span class="text-green-600 font-semibold">（服用済み）</span>
                                 @else

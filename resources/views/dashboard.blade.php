@@ -13,7 +13,7 @@
                 @if (session('status'))
                     <div class="bg-sky-100 border border-sky-400 text-sky-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <strong class="font-bold">成功！</strong>
-                         <span class="block sm:inline">{{ session('status') }}</span>
+                        <span class="block sm:inline">{{ session('status') }}</span>
                     </div>
                 @endif
                 {{-- フラッシュメッセージの表示ここまで --}}
@@ -91,7 +91,6 @@
                     @endif
                 </div>
 
-                                    {{-- ここから新しいボタンを追加 --}}
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 my-8">
                             <a href="{{ route('medications.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2  text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
                                 <x-icons.pills class="bg-white size-6" />
@@ -103,7 +102,6 @@
                         </a>
                     </div>
 
-                    {{-- ここから新しいボタンを追加 --}}
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
                         <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
                             <x-icons.pills class="bg-white size-6" />

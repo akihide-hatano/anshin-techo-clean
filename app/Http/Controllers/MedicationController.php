@@ -12,12 +12,34 @@ class MedicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $medications = Medication::all();
-        // dd($medications);
+        //クエリービルダーの初期化
+        $query = Medication::query();
 
-        return view('medications.index', compact('medications'));
+        //検索キーワードを取得
+        $medicationName = $request->input('medication_name');
+        $effect = $request->input('effect');
+        $sideEffects = $request->input('side_effects');
+
+        //検索条件をクエリに追加
+        if($medicationName){
+            $query->where('medication_name','like',"%{$medicationName}%");
+        }
+        if($effect){
+            $query->where('effect','like',"%{$effect}%");
+        }
+        if($sideEffects){
+            $query->where('sideEffects','like',"%{$sideEffects}%");
+        }
+
+        // フィルタリングされた結果を取得
+        $medications = $query->get();
+
+        //  dd($medications);
+        // dd($effect);
+
+        return view('medications.index', compact('medications','effect','sideEffects'));
     }
 
     /**

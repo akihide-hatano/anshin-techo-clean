@@ -12,6 +12,31 @@
                         </a>
                     </div>
 
+                    <form action="{{ route('medications.index') }}" method="GET" class="mb-4 p-4 bg-gray-100 rounded-md shadow-sm">
+    <div class="flex flex-wrap -mx-2">
+        <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+            <label for="medication_name" class="block text-sm font-medium text-gray-700">薬名</label>
+            <input type="text" name="medication_name" id="medication_name" value="{{ $medicationName ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+        <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+            <label for="effect" class="block text-sm font-medium text-gray-700">効果</label>
+            <input type="text" name="effect" id="effect" value="{{ $effect ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+        <div class="w-full md:w-1/3 px-2">
+            <label for="side_effects" class="block text-sm font-medium text-gray-700">副作用</label>
+            <input type="text" name="side_effects" id="side_effects" value="{{ $sideEffects ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        </div>
+    </div>
+    <div class="mt-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+            検索
+        </button>
+        <a href="{{ route('medications.index') }}" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+            リセット
+        </a>
+    </div>
+</form>
+
                     @if (session('status'))
                         <div class="mb-4 font-medium text-sm text-green-600 bg-green-100 p-3 rounded-md">
                             {{ session('status') }}

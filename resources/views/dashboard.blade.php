@@ -1,10 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-700 leading-tight">
-            {{ __('ダッシュボード') }}
-        </h2>
-    </x-slot>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md sm:rounded-lg px-5">
@@ -16,23 +10,22 @@
                         <span class="block sm:inline">{{ session('status') }}</span>
                     </div>
                 @endif
-                {{-- フラッシュメッセージの表示ここまで --}}
+
+                {{-- 内服記録セクション --}}
                 <div class="mt-8">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-700">本日の内服記録</h3>
-                        {{-- 本日の記録とカレンダーボタンを横並びにする --}}
                         <div class="flex space-x-2">
                              <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
-                                <x-icons.document class="bg-white size-6" />
+                                <x-icons.document class="size-6 text-white" />
                                 記録を登録
                             </a>
                             <a href="{{ route('records.calendar') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors duration-200">
-                                <x-icons.calendar class="bg-white size-6" />
-                                内服カレンダー
+                                <x-icons.calendar class="size-6 text-white" />
+                                カレンダー
                             </a>
                         </div>
                     </div>
-
                     @if ($todayRecords->isNotEmpty())
                         <div class="mt-2 space-y-4">
                             @foreach ($todayRecords as $record)
@@ -59,7 +52,50 @@
                         <p class="mt-2 text-gray-500">本日の内服記録はまだありません。</p>
                     @endif
                 </div>
-                <div class="mt-8">
+
+                <hr class="my-8 border-gray-700 border-3">
+
+            {{-- 内服薬管理セクション --}}
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+                    <x-icons.pills class="size-6 text-gray-700" />
+                    内服薬の管理
+                </h3>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                    <a href="{{ route('medications.create') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
+                        <x-icons.document class="size-5 text-white" />
+                        内服薬登録
+                    </a>
+                    <a href="{{ route('medications.index') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
+                        <x-icons.search class="size-5 text-white" />
+                        内服薬一覧
+                    </a>
+                </div>
+            </div>
+
+            <hr class="my-8 border-3 border-gray-300">
+
+            {{-- 服薬タイミング管理セクション --}}
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+                    <x-icons.clock class="size-6 text-gray-700" />
+                    服薬タイミングの管理
+                </h3>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                    <a href="{{ route('timingtags.create') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+                        <x-icons.document class="size-5 text-white" />
+                        服薬タイミング登録
+                    </a>
+                    <a href="{{ route('timingtags.index') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+                        <x-icons.search class="size-5 text-white" />
+                        服薬タイミング一覧
+                    </a>
+                </div>
+            </div>
+                <hr class="my-8 border-gray-700 border-3">
+
+                {{-- 通知セクション --}}
+                <div class="my-8">
                     <h3 class="text-lg font-bold text-gray-700">最近の内服忘れ通知</h3>
                     @if ($medicationReminders->isEmpty())
                         <p class="mt-2 text-gray-500">最近の内服忘れの記録はありません。</p>
@@ -99,29 +135,6 @@
                     @endif
                 </div>
 
-                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 my-8">
-                            <a href="{{ route('medications.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2  text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
-                                <x-icons.document class="bg-white size-6" />
-                                内服薬登録
-                            </a>
-                        <a href="{{ route('timingtags.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
-                            <x-icons.clock class="bg-white size-6" />
-                            服薬タイミング登録
-                        </a>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
-                            <x-icons.search class="bg-white size-6" />
-                            内服薬一覧
-                        </a>
-                        <a href="{{ route('timingtags.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
-                            <x-icons.clock class="bg-white size-6" />
-                            服薬タイミング一覧
-                        </a>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>

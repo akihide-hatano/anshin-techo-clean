@@ -104,7 +104,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-400 transition-colors duration-200 text-center">
+                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
                             <x-icons.search class="bg-white size-6" />
                             内服薬一覧
                         </a>

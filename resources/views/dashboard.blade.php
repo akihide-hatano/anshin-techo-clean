@@ -53,19 +53,25 @@
 
                 {{-- 内服記録セクション --}}
                 <div class="mt-8">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-700">本日の内服記録</h3>
-                        <div class="flex space-x-2">
-                             <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
+                            <x-icons.check class="size-12"/>
+                            本日の内服記録
+                        </h3>
+
+                        <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 sm:w-auto">
+                            <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center justify-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
                                 <x-icons.document class="size-6 text-white" />
                                 記録を登録
                             </a>
-                            <a href="{{ route('records.calendar') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-indigo-400 hover:bg-indigo-600 transition-colors duration-200">
+                            <a href="{{ route('records.calendar') }}" class="px-4 py-2 rounded-md text-sm flex items-center justify-center gap-1 font-semibold text-white bg-indigo-400 hover:bg-indigo-600 transition-colors duration-200">
                                 <x-icons.calendar class="size-6 text-white" />
                                 カレンダー
                             </a>
                         </div>
                     </div>
+                </div>
+
                     @if ($todayRecords->isNotEmpty())
                         <div class="mt-2 space-y-4">
                             @foreach ($todayRecords as $record)
@@ -91,7 +97,6 @@
                     @else
                         <p class="mt-2 text-gray-500">本日の内服記録はまだありません。</p>
                     @endif
-                </div>
 
                 <hr class="my-8 border-gray-700 border-3">
 

@@ -20,10 +20,17 @@
                 <div class="mt-8">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-700">本日の内服記録</h3>
-                        <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
-                            <x-icons.document class="bg-white size-6" />
-                            記録を登録
-                        </a>
+                        {{-- 本日の記録とカレンダーボタンを横並びにする --}}
+                        <div class="flex space-x-2">
+                             <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
+                                <x-icons.document class="bg-white size-6" />
+                                記録を登録
+                            </a>
+                            <a href="{{ route('records.calendar') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors duration-200">
+                                <x-icons.calendar class="bg-white size-6" />
+                                内服カレンダー
+                            </a>
+                        </div>
                     </div>
 
                     @if ($todayRecords->isNotEmpty())

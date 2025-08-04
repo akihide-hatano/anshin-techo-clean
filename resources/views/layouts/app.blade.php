@@ -17,7 +17,6 @@
     <body class="font-sans antialiased">
         <div class=" bg-sky-500">
             @include('layouts.navigation')
-
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">

@@ -4,16 +4,14 @@
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h1 class="text-2xl font-bold mb-6 text-center">登録されている薬一覧</h1>
-
                     <div class="flex justify-end mb-6">
                         <a href="{{ route('medications.create') }}" class="inline-flex items-center px-4 py-2 gap-1 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:bg-gray-500 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             <x-icons.document class="size-6 text-white" />
                             新しい薬を追加
                         </a>
                     </div>
-                    
                     {{-- ここからsticky対応のフォーム --}}
-                    <div class="sticky top-0 z-50 bg-white p-4 -mx-6 mb-6 md:-mx-8 lg:-mx-8">
+                    <div class="sticky top-0 z-50 bg-white p-4 mb-6">
                         <form action="{{ route('medications.index') }}" method="GET" class="mb-0">
                             <div class="flex flex-wrap items-center">
                                 <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">

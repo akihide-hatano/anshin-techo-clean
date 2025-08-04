@@ -20,7 +20,8 @@
                 <div class="mt-8">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-700">本日の内服記録</h3>
-                        <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm font-semibold text-white bg-green-500 hover:bg-green-600 transition-colors duration-200">
+                        <a href="{{ route('records.create') }}" class="px-4 py-2 rounded-md text-sm flex items-center gap-1 font-semibold text-white bg-gray-500 hover:bg-gray-600 transition-colors duration-200">
+                            <x-icons.document class="bg-white size-6" />
                             記録を登録
                         </a>
                     </div>
@@ -92,22 +93,22 @@
                 </div>
 
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 my-8">
-                            <a href="{{ route('medications.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2  text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
-                                <x-icons.pills class="bg-white size-6" />
+                            <a href="{{ route('medications.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2  text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
+                                <x-icons.document class="bg-white size-6" />
                                 内服薬登録
                             </a>
-                        <a href="{{ route('timingtags.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+                        <a href="{{ route('timingtags.create') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
                             <x-icons.clock class="bg-white size-6" />
                             服薬タイミング登録
                         </a>
                     </div>
 
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-900 hover:bg-gray-800 transition-colors duration-200 text-center">
-                            <x-icons.pills class="bg-white size-6" />
+                        <a href="{{ route('medications.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-400 transition-colors duration-200 text-center">
+                            <x-icons.search class="bg-white size-6" />
                             内服薬一覧
                         </a>
-                        <a href="{{ route('timingtags.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-2 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
+                        <a href="{{ route('timingtags.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-md flex items-center gap-1 text-white font-semibold bg-sky-400 hover:bg-sky-500 transition-colors duration-200 text-center">
                             <x-icons.clock class="bg-white size-6" />
                             服薬タイミング一覧
                         </a>

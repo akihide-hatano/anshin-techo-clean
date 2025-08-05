@@ -1,10 +1,14 @@
 <x-app-layout>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 text-center">新しい内服記録を登録</h1>
+
+                    <div class="mb-4 flex justify-center items-center gap-2">
+                        <h1 class="text-2xl font-bold text-center">新しい内服記録を登録</h1>
+                        <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-20 w-auto">
+                    </div>
 
                     {{-- バリデーションエラーの表示 --}}
                     @if ($errors->any())

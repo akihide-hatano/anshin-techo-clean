@@ -3,7 +3,10 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 text-center">新しい薬を登録する</h1>
+                    <h1 class="text-2xl font-bold mb-6 flex justify-center items-center gap-1">
+                        <img src="{{ asset('images/pill.png') }}" alt="内服薬アイコン" class="size-12">
+                        <span>新しい薬を登録する</span>
+                    </h1>
 
                     {{-- バリデーションエラーメッセージの表示 --}}
                     @if ($errors->any())

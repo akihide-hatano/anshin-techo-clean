@@ -50,7 +50,7 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach ($medications as $medication)
-                                <div class="bg-gray-200 border border-gray-200 rounded-lg shadow-md p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 ease-in-out">
+                                <div class="bg-gray-200 border border-gray-200 rounded-lg shadow-md p-6 flex flex-col justify-between hover:shadow-lg hover:scale-105 transition-shadow duration-300 ease-in-out">
                                     {{-- 薬名を詳細ページへのリンクにする --}}
                                     <h2 class="text-xl font-semibold text-indigo-700 mb-2 border-b pb-2 border-gray-200">
                                         <a href="{{ route('medications.show', $medication) }}" class="hover:underline">

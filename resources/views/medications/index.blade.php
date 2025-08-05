@@ -3,17 +3,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                     <h1 class="text-2xl font-bold mb-6 flex justify-center items-center gap-1">
+                    <h1 class="text-2xl font-bold flex justify-center items-center gap-1">
                         <img src="{{ asset('images/pill.png') }}" alt="内服薬アイコン" class="size-12">
                         <span>登録されている薬一覧</span>
                     </h1>
-                    <div class="flex justify-end mb-6">
-                        <a href="{{ route('medications.create') }}" class="inline-flex items-center px-4 py-2 gap-1 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:bg-gray-500 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            <x-icons.document class="size-6 text-white" />
-                            新しい薬を追加
-                        </a>
-                    </div>
-                    {{-- ここからsticky対応のフォーム --}}
                     <div class="sticky top-0 z-50 bg-white p-4 mb-6">
                         <form action="{{ route('medications.index') }}" method="GET" class="mb-0">
                             <div class="flex flex-wrap items-center">
@@ -30,12 +23,16 @@
                                     <input type="text" name="side_effects" id="side_effects" value="{{ $sideEffects ?? '' }}" class="mt-1 block w-full rounded-md border-gray-400 shadow-sm">
                                 </div>
                             </div>
-                            <div class="mt-4 flex flex-col md:flex-row items-center">
+                            <div class="mt-4 flex flex-col md:flex-row items-center gap-2">
                                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full md:w-auto">
                                     検索
                                 </button>
-                                <a href="{{ route('medications.index') }}" class="mt-2 md:mt-0 md:ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full md:w-auto text-center">
+                                <a href="{{ route('medications.index') }}" class="mt-2 md:mt-0  bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full md:w-auto text-center">
                                     リセット
+                                </a>
+                                <a href="{{ route('medications.create') }}" class="inline-flex items-center px-4 py-2 gap-1 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:bg-gray-500 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        <x-icons.document class="size-6 text-white" />
+                                        新しい薬を追加
                                 </a>
                             </div>
                         </form>
@@ -94,6 +91,10 @@
                             @endforeach
                         </div>
                     @endif
+
+                    <div class="mt-8">
+                        {{ $medications->links() }}
+                    </div>
 
                     <div class="mt-8 text-center">
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">

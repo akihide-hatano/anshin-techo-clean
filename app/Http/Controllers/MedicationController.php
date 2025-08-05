@@ -34,7 +34,7 @@ class MedicationController extends Controller
         }
 
         // フィルタリングされた結果を取得
-        $medications = $query->get();
+        $medications = $query->paginate(9);
 
         //  dd($medications);
         // dd($effect);

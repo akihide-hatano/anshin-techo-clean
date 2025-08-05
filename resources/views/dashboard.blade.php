@@ -55,8 +55,8 @@
                 <div class="mt-8">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
-                            <x-icons.check class="size-12"/>
-                            本日の内服記録
+                            <x-icons.check class="size-8 text-orange-700"/>
+                            <span class="bg-[linear-gradient(transparent_50%,#21ff00_50%)]">本日の内服記録</span>
                         </h3>
 
                         <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 sm:w-auto">

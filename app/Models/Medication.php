@@ -16,7 +16,7 @@ class Medication extends Model
         'medication_name',
         'dosage',
         'notes',
-        'effects',
+        'effect',
         'side_effects',
     ];
 

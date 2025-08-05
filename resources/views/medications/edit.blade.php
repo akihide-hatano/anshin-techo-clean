@@ -1,15 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{__('薬の編集')}}
-        </h2>
-    </x-slot>
+
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gray-200 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 text-center">薬の情報を編集</h1>
+                    <h1 class="text-2xl font-bold flex justify-center items-center gap-1 mb-3">
+                        <img src="{{ asset('images/pill.png') }}" alt="内服薬アイコン" class="size-12">
+                        <span>薬の詳細情報</span>
+                    </h1>
 
                     {{-- バリデーションエラーの表示 --}}
                     @if ($errors->any())
@@ -26,7 +25,7 @@
                         @method('PUT')
                         {{-- 薬の名前 --}}
                         <div class="mb-4">
-                            <label for="medication_name" class="block text-sm font-medium text-gray-700">薬の名前 <span class="text-red-500">*</span></label>
+                            <label for="medication_name" class="block text-sm font-medium text-gray-700">薬の名前<span class="text-red-500">*</span></label>
                             <input type="text" name="medication_name" id="medication_name"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 value="{{ old('medication_name', $medication->medication_name) }}" required autofocus>
@@ -37,10 +36,10 @@
 
                         {{-- 用量 --}}
                         <div class="mb-4">
-                            <label for="dosage" class="block text-sm font-medium text-gray-700">用量</label>
+                            <label for="dosage" class="block text-sm font-medium text-gray-700">用量<span class="text-red-500">*</span></label>
                             <input type="text" name="dosage" id="dosage"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                value="{{ old('dosage', $medication->dosage) }}">
+                                value="{{ old('dosage', $medication->dosage) }}" required>
                             @error('dosage')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -48,9 +47,9 @@
 
                         {{-- 効果 --}}
                         <div class="mb-4">
-                            <label for="effect" class="block text-sm font-medium text-gray-700">効果</label>
+                            <label for="effect" class="block text-sm font-medium text-gray-700">効果<span class="text-red-500">*</span></label>
                             <textarea name="effect" id="effect" rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('effect', $medication->effect) }}</textarea>
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>{{ old('effect', $medication->effect) }}</textarea>
                             @error('effect')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -58,7 +57,7 @@
 
                         {{-- 副作用 --}}
                         <div class="mb-4">
-                            <label for="side_effects" class="block text-sm font-medium text-gray-700">副作用</label>
+                            <label for="side_effects" class="block text-sm font-medium text-gray-700">副作用<span class="text-red-500">*</span></label>
                             <textarea name="side_effects" id="side_effects" rows="3"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('side_effects', $medication->side_effects) }}</textarea>
                             @error('side_effects')

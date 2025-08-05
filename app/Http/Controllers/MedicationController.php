@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Medication;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\Rule; // Ruleファサードを忘れずにインポート
 use function Ramsey\Uuid\v1;
 
 class MedicationController extends Controller
@@ -73,7 +73,6 @@ class MedicationController extends Controller
             'side_effects' => $request->side_effects,
         ]);
 
-        dd($request);
 
          // 3. リダイレクト (登録後、薬一覧ページへ戻る)
         return redirect()->route('medications.index')
@@ -100,28 +99,28 @@ class MedicationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Medication $medication)
-    {
-        //validationの作成
-        $request->validate([
-            'medication_name'=>'required|string|max:255|unique:medications,medication_name',
-            'dosage'=>'nullable|string|max:255',
-            'notes'=>'nullable|string|max:1000',
-            'effect'=>'nullable|string|max:1000',
-            'side_effects'=>'nullable|string|max:1000',
-        ]);
 
-        $medication->update([
-            'medication_name' => $request->medication_name,
-            'dosage' => $request->dosage,
-            'notes' => $request->notes,
-            'effect' => $request->effect,
-            'side_effects' => $request->side_effects,
-        ]);
+public function update(Request $request, Medication $medication)
+{
+    //validationのルール
+    $validatedData = $request->validate([
+        'medication_name' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('medications', 'medication_name')->ignore($medication->medication_id,'medication_id'),
+        ],
+        'dosage' => 'required|string|max:255',
+        'notes' => 'nullable|string|max:1000',
+        'effect' => 'nullable|string|max:1000',
+        'side_effects' => 'nullable|string|max:1000',
+    ]);
 
-        return redirect()->route('medications.show',$medication)
-                        ->with('status','薬の情報が更新されました');
-    }
+    // バリデーションが成功したら実行される
+    $medication->update($validatedData);
+    return redirect()->route('medications.show', $medication)
+                    ->with('status','薬の情報が更新されました');
+}
     /**
      * Remove the specified resource from storage.
      */

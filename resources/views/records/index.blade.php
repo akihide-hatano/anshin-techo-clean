@@ -4,13 +4,23 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    <div class="mb-4 flex items-center justify-between">
+                        {{-- 左側のダミー要素 --}}
+                        <div class="flex-grow"></div>
 
-                    {{-- 新規記録追加ボタン --}}
-                    <div class="mb-6 text-right">
-                        <a href="{{ route('records.create') }}"
-                           class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            {{ __('新規記録を追加') }}
-                        </a>
+                        {{-- 中央のコンテンツ --}}
+                        <div class="flex items-center">
+                            <h1 class="text-2xl font-bold">新しい内服記録を登録</h1>
+                            <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
+                        </div>
+
+                        {{-- 右端のボタン --}}
+                        <div class="flex-grow flex justify-end">
+                            <a href="{{ route('records.create') }}"
+                                class="inline-flex items-end px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                {{ __('新規記録を追加') }}
+                            </a>
+                        </div>
                     </div>
 
                     @if ($records->isEmpty())

@@ -25,18 +25,18 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="dosage" class="block text-gray-700 text-sm font-bold mb-2">用量</label>
-                            <input type="text" name="dosage" id="dosage" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('dosage') }}">
+                            <label for="dosage" class="block text-gray-700 text-sm font-bold mb-2">用量 <span class="text-red-500">*</span></label>
+                            <input type="text" name="dosage" id="dosage" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('dosage') }}" required>
                         </div>
 
                         <div class="mb-4">
-                            <label for="effect" class="block text-gray-700 text-sm font-bold mb-2">効果</label>
-                            <textarea name="effect" id="effect" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ old('effect') }}</textarea>
+                            <label for="effect" class="block text-gray-700 text-sm font-bold mb-2">効果 <span class="text-red-500">*</span></label>
+                            <textarea name="effect" id="effect" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " required>{{ old('effect') }}</textarea>
                         </div>
 
                         <div class="mb-4">
-                            <label for="side_effects" class="block text-gray-700 text-sm font-bold mb-2">副作用</label>
-                            <textarea name="side_effects" id="side_effects" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ old('side_effects') }}</textarea>
+                            <label for="side_effects" class="block text-gray-700 text-sm font-bold mb-2">副作用 <span class="text-red-500">*</span></label>
+                            <textarea name="side_effects" id="side_effects" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>{{ old('side_effects') }}</textarea>
                         </div>
 
                         <div class="mb-4">

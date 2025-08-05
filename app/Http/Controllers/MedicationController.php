@@ -73,7 +73,7 @@ class MedicationController extends Controller
             'side_effects' => $request->side_effects,
         ]);
 
-        // dd($request);
+        dd($request);
 
          // 3. リダイレクト (登録後、薬一覧ページへ戻る)
         return redirect()->route('medications.index')

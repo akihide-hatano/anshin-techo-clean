@@ -5,9 +5,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                    <div class="mb-4 flex justify-center items-center gap-2">
+                    <div class="mb-4 flex justify-center items-center gap-3">
                         <h1 class="text-2xl font-bold text-center">新しい内服記録を登録</h1>
-                        <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-20 w-auto">
+                        <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto">
                     </div>
 
                     {{-- バリデーションエラーの表示 --}}

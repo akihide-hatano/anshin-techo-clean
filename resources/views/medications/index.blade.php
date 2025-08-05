@@ -3,9 +3,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 flex justify-center items-center gap-1">
+                     <h1 class="text-2xl font-bold mb-6 flex justify-center items-center gap-1">
                         <img src="{{ asset('images/pill.png') }}" alt="内服薬アイコン" class="size-12">
-                        <span>新しい薬を登録する</span>
+                        <span>登録されている薬一覧</span>
                     </h1>
                     <div class="flex justify-end mb-6">
                         <a href="{{ route('medications.create') }}" class="inline-flex items-center px-4 py-2 gap-1 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:bg-gray-500 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -18,16 +18,16 @@
                         <form action="{{ route('medications.index') }}" method="GET" class="mb-0">
                             <div class="flex flex-wrap items-center">
                                 <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-                                    <label for="medication_name" class="block text-sm font-medium text-gray-700">薬名</label>
-                                    <input type="text" name="medication_name" id="medication_name" value="{{ $medicationName ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    <label for="medication_name" class="block text-sm font-medium text-gray-90000">薬名</label>
+                                    <input type="text" name="medication_name" id="medication_name" value="{{ $medicationName ?? '' }}" class="mt-1 block w-full rounded-md border-gray-400 shadow-sm">
                                 </div>
                                 <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-                                    <label for="effect" class="block text-sm font-medium text-gray-700">効果</label>
-                                    <input type="text" name="effect" id="effect" value="{{ $effect ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    <label for="effect" class="block text-sm font-medium text-gray-90000">効果</label>
+                                    <input type="text" name="effect" id="effect" value="{{ $effect ?? '' }}" class="mt-1 block w-full rounded-md border-gray-400 shadow-sm">
                                 </div>
                                 <div class="w-full md:w-1/3 px-2">
-                                    <label for="side_effects" class="block text-sm font-medium text-gray-700">副作用</label>
-                                    <input type="text" name="side_effects" id="side_effects" value="{{ $sideEffects ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    <label for="side_effects" class="block text-sm font-medium text-gray-90000">副作用</label>
+                                    <input type="text" name="side_effects" id="side_effects" value="{{ $sideEffects ?? '' }}" class="mt-1 block w-full rounded-md border-gray-400 shadow-sm">
                                 </div>
                             </div>
                             <div class="mt-4 flex flex-col md:flex-row items-center">

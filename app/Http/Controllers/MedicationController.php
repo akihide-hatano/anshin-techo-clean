@@ -59,10 +59,10 @@ class MedicationController extends Controller
         //validationの作成
         $request->validate([
             'medication_name'=>'required|string|max:255|unique:medications,medication_name',
-            'dosage'=>'nullable|string|max:255',
+            'dosage'=>'required|string|max:255',
             'notes'=>'nullable|string|max:1000',
-            'effect'=>'nullable|string|max:1000',
-            'side_effects'=>'nullable|string|max:1000',
+            'effect'=>'required|string|max:1000',
+            'side_effects'=>'required|string|max:1000',
         ]);
         //databaseへの保存
         Medication::create([

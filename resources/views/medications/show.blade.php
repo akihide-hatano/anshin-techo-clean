@@ -2,10 +2,13 @@
 
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-6 text-center">薬の詳細情報</h1>
+                    <h1 class="text-2xl font-bold flex justify-center items-center gap-1 mb-3">
+                        <img src="{{ asset('images/pill.png') }}" alt="内服薬アイコン" class="size-12">
+                        <span>薬の詳細情報</span>
+                    </h1>
 
                     {{-- ステータスメッセージの表示 --}}
                     @if (session('status'))

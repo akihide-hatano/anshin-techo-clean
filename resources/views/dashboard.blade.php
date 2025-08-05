@@ -12,7 +12,7 @@
 
                 {{-- 通知セクション --}}
                 <div class="my-8">
-                    <h3 class="text-lg font-bold text-gray-700">最近の内服忘れ通知</h3>
+                    <h3 class="text-3l font-bold text-gray-700">最近の内服忘れ通知</h3>
                     @if ($medicationReminders->isEmpty())
                         <p class="mt-2 text-gray-500">最近の内服忘れの記録はありません。</p>
                     @else

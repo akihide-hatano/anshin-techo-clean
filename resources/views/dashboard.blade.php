@@ -14,7 +14,7 @@
                 <div class="my-8">
                     <h3 class="text-lg font-bold text-gray-700 flex items-center gap-1">
                         <x-icons.bell class="size-8 text-orange-500"/>
-                        <span class="bg-[linear-gradient(transparent_75%,#c2410c_50%)]">
+                        <span class="bg-[linear-gradient(transparent_83%,#c2410c_50%)]">
                             最近の内服忘れ通知
                         </span>
                         </h3>
@@ -61,7 +61,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
                             <x-icons.check class="size-8 text-orange-700"/>
-                            <span class="bg-[linear-gradient(transparent_70%,#c2410c_50%)]">本日の内服記録</span>
+                            <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">本日の内服記録</span>
                         </h3>
 
                         <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 sm:w-auto">
@@ -80,7 +80,7 @@
                     @if ($todayRecords->isNotEmpty())
                         <div class="mt-2 space-y-4">
                             @foreach ($todayRecords as $record)
-                                <div class="p-4 rounded-lg shadow-sm bg-white border border-gray-200">
+                                <div class="p-4 rounded-lg shadow-sm bg-red-50 border border-red-300">
                                     <p class="text-gray-800 font-bold">
                                         内服のタイミング：{{ $record->timingtag->timing_name }}
                                     </p>
@@ -109,7 +109,9 @@
             <div class="mt-8">
                 <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
                     <img src="{{ asset('images/pill.png') }}" alt="内服薬のアイコン" class="size-14 text-gray-700" />
+                    <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">
                     内服薬の管理
+                    </span>
                 </h3>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
                     <a href="{{ route('medications.create') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-2 text-white font-semibold bg-gray-500 hover:bg-gray-700 transition-colors duration-200 text-center">
@@ -128,8 +130,10 @@
             {{-- 服薬タイミング管理セクション --}}
             <div class="mt-8">
                 <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
-                    <x-icons.clock class="size-6 text-gray-700" />
+                    <x-icons.clock class="size-8 text-orange-700" />
+                    <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">
                     服薬タイミングの管理
+                    </span>
                 </h3>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
                     <a href="{{ route('timingtags.create') }}" class="w-full sm:w-48 px-6 py-3 rounded-md flex items-center justify-center gap-1 text-white font-semibold bg-amber-600 hover:bg-amber-700 transition-colors duration-200 text-center">

@@ -17,3 +17,7 @@
 .fc-event {
     @apply rounded-md p-1 text-sm font-semibold;
 }
+
+.fc-toolbar-chunk .fc-button {
+    @apply px-4 py-2;
+}

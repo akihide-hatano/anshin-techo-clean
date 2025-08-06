@@ -10,12 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: [ dayGridPlugin, interactionPlugin ],
         initialView: 'dayGridMonth',
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
             right: 'dayGridMonth,dayGridWeek,dayGridDay'
         },
         locale: 'ja',
         events: '/records/events',
+
+        buttonText: {
+            today: '今日',
+            month: '月',
+            week: '週',
+            day: '日',
+            prev: '前', // または '先月'
+            next: '次'  // または '翌月'
+        },
 
         eventClick: function(info) {
             if (info.event.url) {

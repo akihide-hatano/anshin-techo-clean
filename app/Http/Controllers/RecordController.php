@@ -118,7 +118,6 @@ class RecordController extends Controller
         // 成功メッセージと共に内服記録一覧ページにリダイレクト
         return redirect()->route('records.index')->with('success', '内服記録が追加されました。');
     }
-        // ★★★ 修正ここまで ★★★
 
     /**
      * Display the specified resource.
@@ -286,14 +285,14 @@ class RecordController extends Controller
             // ユーザーに紐づく、指定期間内の内服記録を取得
             // medications と timingTag リレーションをEager Load
             $records = Record::where('user_id', $user->id)
-                             ->whereBetween('taken_at', [$start, $end])
-                             ->with(['medications', 'timingTag'])
-                             ->get();
+                            ->whereBetween('taken_at', [$start, $end])
+                            ->with(['medications', 'timingTag'])
+                            ->get();
 
             $dailyRecords = [];
-
             // ★★★ ここから修正: 日付ごとに記録をグループ化し、完了状態を集約 ★★★
             foreach ($records as $record) {
+                Log::info(json_encode($record));
                 if (!$record->taken_at instanceof Carbon) {
                     Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
                     continue;
@@ -307,8 +306,8 @@ class RecordController extends Controller
                 });
 
                 // 日付ごとの集約データを作成または更新
+                // その日の最初の記録であれば初期化
                 if (!isset($dailyRecords[$date])) {
-                    // その日の最初の記録であれば初期化
                     $dailyRecords[$date] = [
                         'date' => $date,
                         'has_uncompleted_meds' => false, // 初期値は全て完了と仮定

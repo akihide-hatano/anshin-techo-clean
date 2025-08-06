@@ -1,23 +1,42 @@
+/* resources/css/calendar.css */
+
+/* FullCalendarのボタン全般に適用 */
+.fc-toolbar-chunk .fc-button {
+    @apply px-3 py-2 rounded-md bg-gray-400 text-gray-200; /* 背景色と文字色、角丸を追加 */
+}
+
+/* ビュー切り替えボタン（month week day）に適用 */
+.fc-toolbar-chunk .fc-button-group .fc-button {
+    @apply px-3 py-2;
+}
+
+/* 選択中のビューボタンのスタイル */
+.fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active {
+    @apply bg-red-300 text-white; /* 選択時の背景色と文字色 */
+}
+
+/* ホバー時のスタイル（任意で調整） */
+.fc-toolbar-chunk .fc-button:hover {
+    @apply bg-gray-600 text-gray-200;
+}
+
+/* その他の既存スタイル... */
 .event-completed {
     @apply bg-green-500 border-green-500 text-white cursor-pointer;
 }
 
 .event-uncompleted {
-    @apply bg-red-400 border-red-400 text-white cursor-pointer;
+    @apply bg-yellow-400 border-yellow-400 text-white cursor-pointer;
 }
 
 .event-completed:hover {
-    @apply bg-green-600 border-green-600; /* ホバー時の色 */
+    @apply bg-green-600 border-green-600;
 }
 
 .event-uncompleted:hover {
-    @apply bg-red-500 border-red-500; /* ホバー時の色 */
+    @apply bg-yellow-500 border-yellow-500;
 }
 
 .fc-event {
     @apply rounded-md p-1 text-sm font-semibold;
-}
-
-.fc-toolbar-chunk .fc-button {
-    @apply px-4 py-2;
 }

@@ -18,11 +18,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
     //内服の通知に関するrouteを作成。
     Route::patch('/medication-reminders/{medicationReminder}/mark-as-read', [MedicationReminderController::class, 'markAsRead'])->name('medication-reminders.mark-as-read');
-
 
     // カレンダー表示ルート (records.calendar)
     Route::get('/records/calendar', [RecordController::class, 'calendar'])->name('records.calendar');
@@ -41,5 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('medications', MedicationController::class);
     // 服用タイミングのリソースルート
     Route::resource('timingtags', TimingTagController::class);
+});
 
 require __DIR__.'/auth.php';

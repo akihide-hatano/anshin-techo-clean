@@ -1,3 +1,24 @@
+/* CSS (resources/css/app.css) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.event-completed {
+    @apply bg-green-500 border-green-500 text-white cursor-pointer;
+}
+
+.event-uncompleted {
+    @apply bg-red-400 border-red-400 text-white cursor-pointer;
+}
+
+.event-completed:hover {
+    @apply bg-green-600 border-green-600; /* ホバー時の色 */
+}
+
+.event-uncompleted:hover {
+    @apply bg-red-500 border-red-500; /* ホバー時の色 */
+}
+
+.fc-event {
+    @apply rounded-md p-1 text-sm font-semibold;
+}

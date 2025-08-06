@@ -293,8 +293,6 @@ class RecordController extends Controller
             $events = [];
 
             foreach ($records as $record) {
-                // Log::info(json_encode($record)); // デバッグ用
-
                 if (!$record->taken_at instanceof Carbon) {
                     Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
                     continue;
@@ -316,6 +314,8 @@ class RecordController extends Controller
 
                 // イベントのURLは、その記録の詳細ページにリンク
                 $url = route('records.show', $record->record_id);
+                //カスタムクラスの割り当てる
+                $className = $recordHasUncompleted ? 'event-uncompleted' : 'event-completed';
 
                 $events[] = [
                     // イベントIDにはレコードIDを使用することで、各イベントがユニークになる
@@ -323,18 +323,16 @@ class RecordController extends Controller
                     'title' => $title,
                     'start' => $date,
                     'allDay' => true,
+                    'url' => $url,
+                    'className'=>$className,
                     'extendedProps' => [
                         'record_id' => $record->record_id,
                         'has_uncompleted_meds' => $recordHasUncompleted,
                         'timing_name' => $timingName,
                         'description' => 'この日の服用記録: ' . $timingName . ($recordHasUncompleted ? ' (未完了あり)' : ' (全て完了)'),
                     ],
-                    'backgroundColor' => $color,
-                    'borderColor' => $color,
-                    'url' => $url,
                 ];
             }
-            // ★★★ 修正ここまで ★★★
 
             return response()->json($events);
 

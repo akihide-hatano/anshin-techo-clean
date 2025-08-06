@@ -274,6 +274,7 @@ class RecordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+// ★★★ 修正後のgetCalendarEventsメソッド全体 ★★★
     public function getCalendarEvents(Request $request)
     {
         try {
@@ -289,74 +290,44 @@ class RecordController extends Controller
                             ->with(['medications', 'timingTag'])
                             ->get();
 
-            $dailyRecords = [];
-            // ★★★ ここから修正: 日付ごとに記録をグループ化し、完了状態を集約 ★★★
+            $events = [];
+
             foreach ($records as $record) {
-                Log::info(json_encode($record));
+                // Log::info(json_encode($record)); // デバッグ用
+
                 if (!$record->taken_at instanceof Carbon) {
                     Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
                     continue;
                 }
-
-                $date = $record->taken_at->toDateString(); // 'YYYY-MM-DD' 形式の日付文字列を取得
 
                 // その記録に未完了の薬が一つでもあれば true
                 $recordHasUncompleted = $record->medications->contains(function ($medication) {
                     return !$medication->pivot->is_completed;
                 });
 
-                // 日付ごとの集約データを作成または更新
-                // その日の最初の記録であれば初期化
-                if (!isset($dailyRecords[$date])) {
-                    $dailyRecords[$date] = [
-                        'date' => $date,
-                        'has_uncompleted_meds' => false, // 初期値は全て完了と仮定
-                        'record_ids' => [], // その日のレコードIDを保持
-                        'timing_names' => [], // その日の服用タイミング名を保持
-                    ];
-                }
+                $date = $record->taken_at->toDateString();
+                $timingName = $record->timingTag->timing_name ?? '不明';
 
-                // その日のいずれかの記録に未完了の薬があれば、その日の総合ステータスを未完了にする
-                if ($recordHasUncompleted) {
-                    $dailyRecords[$date]['has_uncompleted_meds'] = true;
-                }
+                $statusSymbol = $recordHasUncompleted ? '×' : '⚪︎';
+                $color = $recordHasUncompleted ? '#FFC107' : '#4CAF50';
 
-                $dailyRecords[$date]['record_ids'][] = $record->record_id;
-                $dailyRecords[$date]['timing_names'][] = $record->timingTag ? $record->timingTag->timing_name : '不明';
-            }
+                // イベントのタイトルは「⚪︎」または「×」と、その記録の服用タイミング名
+                $title = $statusSymbol . ' ' . $timingName;
 
-            $events = [];
-
-            // 集約された日付ごとのデータからイベントを生成
-            foreach ($dailyRecords as $date => $dailyData) {
-                $statusSymbol = $dailyData['has_uncompleted_meds'] ? '×' : '⚪︎';
-                $color = $dailyData['has_uncompleted_meds'] ? '#FFC107' : '#4CAF50'; // 未完了があれば黄色、全て完了なら緑
-
-                // イベントのタイトルは「⚪︎」または「×」と、その日の服用タイミングの概要
-                // 例: ⚪︎ (朝食後, 夕食前)
-                $timingSummary = count($dailyData['timing_names']) > 1
-                               ? '(' . implode(', ', array_unique($dailyData['timing_names'])) . ')'
-                               : ($dailyData['timing_names'][0] ?? '記録あり'); // 1つだけならそのまま、なければ「記録あり」
-
-                $title = $statusSymbol . ' ' . $timingSummary;
-
-                // イベントのURLは、その日の最初の記録の詳細ページにリンクするか、
-                // またはその日の記録一覧ページ（もしあれば）にリンクするのが良いでしょう。
-                // ここでは、その日の最初のrecord_idにリンクします。
-                $firstRecordId = !empty($dailyData['record_ids']) ? $dailyData['record_ids'][0] : null;
-                $url = $firstRecordId ? route('records.show', $firstRecordId) : null;
+                // イベントのURLは、その記録の詳細ページにリンク
+                $url = route('records.show', $record->record_id);
 
                 $events[] = [
-                    'id' => $date, // 日付をイベントIDとして使用
+                    // イベントIDにはレコードIDを使用することで、各イベントがユニークになる
+                    'id' => $record->record_id,
                     'title' => $title,
-                    'start' => $date, // 日付のみを設定
-                    'allDay' => true, // 終日イベントとして扱う
+                    'start' => $date,
+                    'allDay' => true,
                     'extendedProps' => [
-                        'date' => $date,
-                        'has_uncompleted_meds' => $dailyData['has_uncompleted_meds'],
-                        'record_ids' => $dailyData['record_ids'],
-                        'timing_names' => $dailyData['timing_names'],
-                        'description' => 'この日の服用記録: ' . implode(', ', array_unique($dailyData['timing_names'])) . ($dailyData['has_uncompleted_meds'] ? ' (未完了あり)' : ' (全て完了)'),
+                        'record_id' => $record->record_id,
+                        'has_uncompleted_meds' => $recordHasUncompleted,
+                        'timing_name' => $timingName,
+                        'description' => 'この日の服用記録: ' . $timingName . ($recordHasUncompleted ? ' (未完了あり)' : ' (全て完了)'),
                     ],
                     'backgroundColor' => $color,
                     'borderColor' => $color,

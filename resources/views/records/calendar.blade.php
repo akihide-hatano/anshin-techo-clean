@@ -18,9 +18,6 @@
         </div>
     </div>
 
-    {{-- FullCalendarのCSSを読み込む --}}
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css' rel='stylesheet' />
-
  {{-- ★★★ 変更点: `@vite`でCSSとJSをまとめて読み込む ★★★ --}}
     @vite(['resources/css/calendar.css', 'resources/js/calendar.js'])
 

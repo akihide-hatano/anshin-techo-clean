@@ -1,20 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.event-completed{
-    @apply bg-green-500 border-green-500 text-white;
-}
-
-.event-uncompleted{
-    @apply bg-yellow-500 border-yellow-500 text-white;
-}
-
-.event-completed:hover,
-.event-uncompleted:hover{
-    @apply opacity-75 cursor-pointer;
-}
-
-.fc-event {
-    @apply rounded-md p-1 text-sm font-semibold;
-}

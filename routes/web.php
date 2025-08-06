@@ -23,7 +23,6 @@ Route::middleware('auth')->group(function () {
     //内服の通知に関するrouteを作成。
     Route::patch('/medication-reminders/{medicationReminder}/mark-as-read', [MedicationReminderController::class, 'markAsRead'])->name('medication-reminders.mark-as-read');
 
-    // ★★★ 最も具体的なルートを、リソースルートよりも先に定義する ★★★
 
     // カレンダー表示ルート (records.calendar)
     Route::get('/records/calendar', [RecordController::class, 'calendar'])->name('records.calendar');

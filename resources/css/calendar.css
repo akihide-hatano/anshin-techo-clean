@@ -1,5 +1,3 @@
-/* resources/css/calendar.css */
-
 /* FullCalendarのボタン全般に適用 */
 .fc-toolbar-chunk .fc-button {
     @apply px-3 py-2 rounded-md bg-gray-400 text-gray-200; /* 背景色と文字色、角丸を追加 */
@@ -9,10 +7,9 @@
 .fc-toolbar-chunk .fc-button-group .fc-button {
     @apply px-3 py-2;
 }
-
 /* 選択中のビューボタンのスタイル */
 .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active {
-    @apply bg-red-300 text-white; /* 選択時の背景色と文字色 */
+    @apply bg-red-300 text-white;
 }
 
 /* ホバー時のスタイル（任意で調整） */
@@ -20,7 +17,6 @@
     @apply bg-gray-600 text-gray-200;
 }
 
-/* その他の既存スタイル... */
 .event-completed {
     @apply bg-green-500 border-green-500 text-white cursor-pointer;
 }

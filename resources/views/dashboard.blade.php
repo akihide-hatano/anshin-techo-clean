@@ -58,7 +58,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <h3 class="text-2xl font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
                             <x-icons.check class="size-8 text-orange-700"/>
-                            <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">本日の内服記録</span>
+                            <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)]">本日の内服記録</span>
                         </h3>
 
                         <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 sm:w-auto">
@@ -106,7 +106,7 @@
             <div class="mt-8">
                 <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
                     <img src="{{ asset('images/pill.png') }}" alt="内服薬のアイコン" class="size-14 text-gray-700" />
-                    <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">
+                    <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)]">
                     内服薬の管理
                     </span>
                 </h3>
@@ -128,7 +128,7 @@
             <div class="mt-8">
                 <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
                     <x-icons.clock class="size-8 text-orange-700" />
-                    <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">
+                    <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)]">
                     服薬タイミングの管理
                     </span>
                 </h3>

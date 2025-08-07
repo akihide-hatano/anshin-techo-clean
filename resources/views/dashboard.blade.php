@@ -2,19 +2,17 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md sm:rounded-lg px-5">
-
                 {{-- フラッシュメッセージの表示 --}}
                 @if (session('status'))
                     <div class="bg-sky-100 border border-red-600 text-red-800 mt-3 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline">{{ session('status') }}</span>
                     </div>
                 @endif
-
                 {{-- 通知セクション --}}
                 <div class="my-8">
-                    <h3 class="text-lg font-bold text-gray-700 flex items-center gap-1">
+                    <h3 class="text-lg font-bold text-gray-700 flex items-center gap-3 mb-3">
                         <x-icons.bell class="size-8 text-orange-500"/>
-                        <span class="bg-[linear-gradient(transparent_83%,#c2410c_50%)]">
+                        <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)] text-2xl">
                             最近の内服忘れ通知
                         </span>
                         </h3>
@@ -55,13 +53,12 @@
                         </ul>
                     @endif
                 </div>
-
                 {{-- 内服記録セクション --}}
                 <div class="mt-8">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
+                        <h3 class="text-2xl font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
                             <x-icons.check class="size-8 text-orange-700"/>
-                            <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">本日の内服記録</span>
+                            <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">本日の内服記録</span>
                         </h3>
 
                         <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 sm:w-auto">
@@ -107,9 +104,9 @@
 
             {{-- 内服薬管理セクション --}}
             <div class="mt-8">
-                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
                     <img src="{{ asset('images/pill.png') }}" alt="内服薬のアイコン" class="size-14 text-gray-700" />
-                    <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">
+                    <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">
                     内服薬の管理
                     </span>
                 </h3>
@@ -129,9 +126,9 @@
 
             {{-- 服薬タイミング管理セクション --}}
             <div class="mt-8">
-                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
                     <x-icons.clock class="size-8 text-orange-700" />
-                    <span class="bg-[linear-gradient(transparent_80%,#c2410c_50%)]">
+                    <span class="bg-[linear-gradient(transparent_92%,#c2410c_50%)]">
                     服薬タイミングの管理
                     </span>
                 </h3>

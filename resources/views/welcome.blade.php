@@ -7,39 +7,38 @@
                         <img src="{{ asset('images/unnamed.png') }}" alt="Anshin-Appカレンダー画面" class="rounded-lg shadow-md h-auto">
                     </div>
 
-                    {{-- ★★★ この div にクラスを追加 ★★★ --}}
                     <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg flex flex-col justify-center h-full">
-                        <h1 class="text-3xl text-center font-bold mb-4 text-gray-800">Anshin-App</h1>
-                        <p class="text-gray-600 text-lg mb-6">
+                        <h1 class="text-2xl md:text-3xl text-center font-bold mb-4 text-gray-800">Anshin-App</h1>
+                        <p class="text-base md:text-lg text-gray-600 mb-6">
                             Anshin-Appは、大切な内服管理をサポートし、毎日の健康を安心して見守るためのアプリです。
                         </p>
                         <ul class="space-y-4 text-gray-700">
                             <li class="flex items-start">
                                 <span class="text-green-500 mr-2 mt-1">💊</span>
                                 <div>
-                                    <h3 class="font-bold text-xl">内服記録の管理</h3>
-                                    <p>自分が内服を飲めたかを記録し、一目で確認できます。</p>
+                                    <h3 class="font-bold text-xl md:text-2xl">内服記録の管理</h3>
+                                    <p class="text-sm md:text-base">自分が内服を飲めたかを記録し、一目で確認できます。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="text-blue-500 mr-2 mt-1">📅</span>
                                 <div>
-                                    <h3 class="font-bold text-xl">カレンダーで振り返り</h3>
-                                    <p>カレンダー機能で過去の内服状況を簡単に振り返ることができます。</p>
+                                    <h3 class="font-bold text-xl md:text-2xl">カレンダーで振り返り</h3>
+                                    <p class="text-sm md:text-base">カレンダー機能で過去の内服状況を簡単に振り返ることができます。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="text-red-500 mr-2 mt-1">🔔</span>
                                 <div>
-                                    <h3 class="font-bold text-xl">内服漏れの通知</h3>
-                                    <p>ダッシュボードに内服漏れをした際のメッセージが表示されます。</p>
+                                    <h3 class="font-bold text-xl md:text-2xl">内服漏れの通知</h3>
+                                    <p class="text-sm md:text-base">ダッシュボードに内服漏れをした際のメッセージが表示されます。</p>
                                 </div>
                             </li>
                             <li class="flex items-start">
                                 <span class="text-yellow-500 mr-2 mt-1">🤝</span>
                                 <div>
-                                    <h3 class="font-bold text-xl">大切な人との連携</h3>
-                                    <p>設定すれば、大切な人に内服忘れのメールが届き、一緒に健康をサポートできます。</p>
+                                    <h3 class="font-bold text-xl md:text-2xl">大切な人との連携</h3>
+                                    <p class="text-sm md:text-base">設定すれば、大切な人に内服忘れのメールが届き、一緒に健康をサポートできます。</p>
                                 </div>
                             </li>
                         </ul>

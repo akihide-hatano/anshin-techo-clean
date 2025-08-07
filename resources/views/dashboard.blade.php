@@ -54,7 +54,7 @@
                     @endif
                 </div>
                 {{-- 内服記録セクション --}}
-                <div class="mt-8">
+                <div class="mt-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <h3 class="text-2xl font-bold text-gray-700 flex items-center gap-2 mb-4 sm:mb-0">
                             <x-icons.check class="size-8 text-orange-700"/>
@@ -100,10 +100,10 @@
                         <p class="mt-2 text-gray-500">本日の内服記録はまだありません。</p>
                     @endif
 
-                <hr class="my-8 border-gray-700 border-3">
+                <hr class="my-4 border-gray-700 border-3">
 
             {{-- 内服薬管理セクション --}}
-            <div class="mt-8">
+            <div class="mt-6">
                 <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
                     <img src="{{ asset('images/pill.png') }}" alt="内服薬のアイコン" class="size-14 text-gray-700" />
                     <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)]">
@@ -122,10 +122,10 @@
                 </div>
             </div>
 
-            <hr class="my-8 border-3 border-gray-300">
+            <hr class="my-4 border-3 border-gray-600">
 
             {{-- 服薬タイミング管理セクション --}}
-            <div class="mt-8">
+            <div class="mt-6">
                 <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
                     <x-icons.clock class="size-8 text-orange-700" />
                     <span class="bg-[linear-gradient(transparent_95%,#c2410c_50%)]">
@@ -143,7 +143,7 @@
                     </a>
                 </div>
             </div>
-                <hr class="my-8 border-gray-700 border-3">
+                <hr class="my-4 border-gray-700 border-3">
             </div>
         </div>
     </div>

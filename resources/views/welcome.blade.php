@@ -4,9 +4,13 @@
             <div class="mt-8 overflow-hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                     <div class="overflow-hidden shadow-xl sm:rounded-lg flex items-center justify-center">
-                        <img src="{{ asset('images/unnamed.png') }}" alt="Anshin-Appカレンダー画面" class="rounded-lg shadow-md h-auto">
+                        <picture>
+                            <!-- スマホ (770px 以下) -->
+                            <source srcset="{{ asset('images/home-sp-image.png') }}" media="(max-width: 770px)">
+                            <!-- 通常 (PCなど) -->
+                            <img src="{{ asset('images/home-image.png') }}" alt="Anshin-Appカレンダー画面" class="rounded-lg shadow-md h-auto">
+                        </picture>
                     </div>
-
                     <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg flex flex-col justify-center h-full">
                         <h1 class="text-2xl md:text-3xl text-center font-bold mb-4 text-gray-800">Anshin-App</h1>
                         <p class="text-base md:text-lg text-gray-600 mb-6">

@@ -3,12 +3,13 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="mt-8 overflow-hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                    <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg flex items-center justify-center">
-                        <img src="{{ asset('images/calendar_screenshot.png') }}" alt="Anshin-Appカレンダー画面" class="rounded-lg shadow-md" style="max-height: 500px;">
+                    <div class="overflow-hidden shadow-xl sm:rounded-lg flex items-center justify-center">
+                        <img src="{{ asset('images/unnamed.png') }}" alt="Anshin-Appカレンダー画面" class="rounded-lg shadow-md h-auto">
                     </div>
 
-                    <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                        <h1 class="text-4xl font-bold mb-4 text-gray-800">Anshin-App</h1>
+                    {{-- ★★★ この div にクラスを追加 ★★★ --}}
+                    <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg flex flex-col justify-center h-full">
+                        <h1 class="text-3xl text-center font-bold mb-4 text-gray-800">Anshin-App</h1>
                         <p class="text-gray-600 text-lg mb-6">
                             Anshin-Appは、大切な内服管理をサポートし、毎日の健康を安心して見守るためのアプリです。
                         </p>

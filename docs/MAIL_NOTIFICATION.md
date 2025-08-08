@@ -42,7 +42,7 @@ if (! $isCompleted) {
 
 ### 2. キューへの投入（EventServiceProvider）
 
-`EventServiceProvider.php` で、イベントとリスナーの関連付けを設定します。  
+`EventServiceProvider.php` で、イベントとリスナーの関連付けを設定します。
 `MedicationMarkedUncompleted` イベントが発火すると、対応するリスナー `SendMedicationUncompletedNotification` がキューに登録されます。
 
 ```php
@@ -53,4 +53,27 @@ protected $listen = [
         SendMedicationUncompletedNotification::class,
     ],
 ];
+```
+
+### 3. リスナーの実行（Queue Worker）
+
+キューに登録されたジョブは、キューワーカーが `php artisan queue:work` コマンドで起動しているときに処理されます。  
+リスナーの `handle` メソッド内で、`notification_email` が設定されていればメール送信処理が実行されます。
+
+```php
+// app/Listeners/SendMedicationUncompletedNotification.php
+
+public function handle(MedicationMarkedUncompleted $event): void
+{
+    if ($event->user->notification_email) {
+        Mail::to($event->user->notification_email)
+            ->send(new MedicationUncompletedMail(
+                $event->user,
+                $event->record,
+                $event->medication,
+                $event->reasonNotTaken
+            ));
+    }
+}
+```
 

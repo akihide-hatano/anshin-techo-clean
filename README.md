@@ -93,6 +93,7 @@ sail artisan migrate:fresh --seed
 ```bash
 # 別ターミナル1: Vite開発サーバー
 sail npm run dev
+```
 
 ```bash
 # 別ターミナル2: メール送信用キュー

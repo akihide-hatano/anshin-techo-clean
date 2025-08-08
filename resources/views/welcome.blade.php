@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="mt-8 overflow-hidden">
                 <div class="p-6 bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="text-2xl md:text-3xl text-center font-bold mb-4 text-gray-800">Anshin-App</h1>
@@ -39,10 +39,24 @@
                     </ul>
                 </div>
             </div>
+
             <div class="flex justify-center mt-8">
-                <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    {{ __('ダッシュボードへ') }}
-                </a>
+                @guest
+                    <div class="flex space-x-4">
+                        <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            {{ __('ログイン') }}
+                        </a>
+                        <a href="{{ route('register') }}" class="inline-flex items-center px-6 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            {{ __('新規登録') }}
+                        </a>
+                    </div>
+                @endguest
+
+                @auth
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-lg text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        {{ __('ダッシュボードへ') }}
+                    </a>
+                @endauth
             </div>
         </div>
     </div>

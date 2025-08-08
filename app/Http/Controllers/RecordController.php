@@ -61,11 +61,14 @@ class RecordController extends Controller
         return view('records.create', compact('medications', 'timingTags'));
     }
 
-    /**
+/**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        // ① メソッド開始のログ
+        Log::info('DEBUG-STORE: store() method started.');
+
         //バリデーションルール
         $validated = $request->validate([
             'taken_date' => 'required|date',
@@ -76,6 +79,9 @@ class RecordController extends Controller
             'medications.*.is_completed' => 'nullable|boolean',
             'medications.*.reason_not_taken' => 'nullable|string|max:255',
         ]);
+
+        // ② バリデーション成功後のログ
+        Log::info('DEBUG-STORE: Validation successful. Request data: ' . json_encode($validated));
 
         $timingTag = TimingTag::find($validated['timing_tag_id']);
         $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
@@ -89,7 +95,9 @@ class RecordController extends Controller
             'timing_tag_id' => $validated['timing_tag_id'],
         ]);
 
-        // ★修正済み: sync()で中間テーブルを一括登録
+        // ③ レコード作成後のログ
+        Log::info('DEBUG-STORE: New record created with ID ' . $record->record_id);
+
         if (isset($validated['medications'])) {
             $pivotData = [];
             foreach ($validated['medications'] as $medicationData) {
@@ -98,15 +106,30 @@ class RecordController extends Controller
                 $reasonNotTaken = null;
                 if (!$isCompleted) {
                     $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
+
+                    // ④ イベント発火条件のチェックログ
+                    Log::info("DEBUG-STORE-COND: Condition met for event dispatching for Medication ID {$medicationId} (isCompleted: false).");
+                    
+                    $medication = Medication::find($medicationId);
+                    if ($medication) {
+                        event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
+                        Log::info("Medication marked uncompleted event dispatched from store() for Record ID {$record->record_id}, Medication ID {$medicationId}");
+                    }
                 }
+                
                 $pivotData[$medicationId] = [
                     'taken_dosage' => $medicationData['taken_dosage'] ?? null,
                     'is_completed' => $isCompleted,
                     'reason_not_taken' => $reasonNotTaken,
                 ];
             }
+            // ⑤ sync()実行直前のログ
+            Log::info('DEBUG-STORE: Starting sync() for pivot table. Pivot data: ' . json_encode($pivotData));
             $record->medications()->sync($pivotData);
         }
+
+        // ⑥ 処理完了後のログ
+        Log::info('DEBUG-STORE: store() method finished successfully.');
 
         // 成功メッセージと共に内服記録一覧ページにリダイレクト
         return redirect()->route('records.index')->with('success', '内服記録が追加されました。');
@@ -160,11 +183,11 @@ class RecordController extends Controller
         return view('records.edit', compact('record', 'medications', 'timingTags'));
     }
 
-    /**
+/*
      * Update the specified resource in storage.
      * 内服記録を更新し、未完了になった薬があれば管理者通知イベントを発火します。
      */
-    public function update(Request $request, Record $record)
+public function update(Request $request, Record $record)
     {
         try {
             if ($record->user_id !== Auth::id()) {
@@ -191,7 +214,6 @@ class RecordController extends Controller
             ]);
 
             $pivotData = [];
-            // 更新前に既存のピボットデータを取得しておく (変更を検出するため)
             $oldPivotData = $record->medications->keyBy('medication_id')->map(function ($med) {
                 return [
                     'is_completed' => (bool) $med->pivot->is_completed,
@@ -214,21 +236,27 @@ class RecordController extends Controller
                         'reason_not_taken' => $reasonNotTaken,
                     ];
 
-                    // ★修正済み: 未完了イベントの発火ロジックは正しい
-                    // 薬の完了状態が「完了」から「未完了」に変わった場合にイベントを発火
                     $wasCompleted = $oldPivotData->get($medicationId)['is_completed'] ?? true;
+
+                    // ★追加：条件判定の直前にログを出力
+                    Log::info("DEBUG-COND: Checking event condition for Medication ID {$medicationId}.");
+                    Log::info("DEBUG-COND: New state (isCompleted): " . ($isCompleted ? 'true' : 'false'));
+                    Log::info("DEBUG-COND: Old state (wasCompleted): " . ($wasCompleted ? 'true' : 'false'));
+
                     if (!$isCompleted && $wasCompleted) {
                         $medication = Medication::find($medicationId);
                         if ($medication) {
-                            // MedicationMarkedUncompleted イベントをディスパッチ
+                            Log::info("DEBUG: Condition met for event dispatching for Medication ID {$medicationId}.");
                             event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
                             Log::info("Medication marked uncompleted event dispatched for Record ID {$record->record_id}, Medication ID {$medicationId}");
                         }
                     }
                 }
             }
-            // 中間テーブルの同期 (sync)
+
+            Log::info('DEBUG: Starting sync() for pivot table.');
             $record->medications()->sync($pivotData);
+            Log::info('DEBUG: sync() completed successfully.');
 
             return redirect()->route('records.show', $record)->with('success', '内服記録が更新されました。');
         } catch (QueryException $e) {

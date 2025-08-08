@@ -127,15 +127,15 @@
                                                 <option value="">薬を選択</option>
                                                 {{-- JavaScriptでオプションを動的に追加します --}}
                                             </select>
-<select name="medications[0][taken_dosage]"
-        class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-    <option value="" selected>錠数を選択</option>
-    <option value="1">1錠</option>
-    <option value="2">2錠</option>
-    <option value="3">3錠</option>
-    <option value="4">4錠</option>
-    <option value="5">5錠</option>
-</select>
+                                            <select name="medications[0][taken_dosage]"
+                                                    class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                <option value="" selected>錠数を選択</option>
+                                                <option value="1">1錠</option>
+                                                <option value="2">2錠</option>
+                                                <option value="3">3錠</option>
+                                                <option value="4">4錠</option>
+                                                <option value="5">5錠</option>
+                                            </select>
                                             <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
                                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>

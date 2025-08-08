@@ -25,10 +25,9 @@ class SendMedicationUncompletedNotification implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(MedicationMarkedUncompleted $event): void
+ public function handle(MedicationMarkedUncompleted $event): void
     {
         try {
-            // イベントで渡されたデータを取得
             $record = $event->record;
             $medication = $event->medication;
             $reasonNotTaken = $event->reasonNotTaken;
@@ -36,7 +35,6 @@ class SendMedicationUncompletedNotification implements ShouldQueue
 
             Log::info("Medication marked uncompleted event handled for User: {$user->id}, Record: {$record->record_id}, Medication: {$medication->medication_name}");
 
-            // 内服忘れ通知を保存 (ダッシュボード用)
             MedicationReminder::create([
                 'user_id' => $user->id,
                 'record_id' => $record->record_id,
@@ -44,9 +42,9 @@ class SendMedicationUncompletedNotification implements ShouldQueue
                 'is_read' => false,
             ]);
 
-            // メール送信
             if ($user->notification_email) {
-                Mail::to($user->notification_email)->send(new MedicationUncompletedMail($record, $medication, $reasonNotTaken));
+                // ★修正：$user を引数に追加
+                Mail::to($user->notification_email)->send(new MedicationUncompletedMail($user, $record, $medication, $reasonNotTaken));
                 Log::info('Notification email sent successfully.');
             } else {
                 Log::info('Notification email not set for user, skipping email send.');

@@ -22,6 +22,8 @@ MAIL_FROM_ADDRESS="hello@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
+---
+
 ## 実装フロー（開発者向け — コード付き）
 ### 1. イベントの発火（Controller）
 RecordController の store / update 内で、未完了判定時にイベントを発火します。

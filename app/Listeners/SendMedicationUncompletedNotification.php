@@ -21,6 +21,10 @@ class SendMedicationUncompletedNotification
      */
     public function handle(MedicationMarkedUncompleted $event): void
     {
-        //
+        //イベントで渡されてdataを取得
+            $record = $event->record;
+            $medication = $event->medication;
+            $reasonNotTaken = $event->reasonNotTaken;
+            $user = $event->user;
     }
 }

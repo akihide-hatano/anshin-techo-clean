@@ -38,4 +38,19 @@ if (! $isCompleted) {
     // 未完了の場合にイベントを発火
     event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
 }
+```
+
+### 2. キューへの投入（EventServiceProvider）
+
+`EventServiceProvider.php` で、イベントとリスナーの関連付けを設定します。  
+`MedicationMarkedUncompleted` イベントが発火すると、対応するリスナー `SendMedicationUncompletedNotification` がキューに登録されます。
+
+```php
+// app/Providers/EventServiceProvider.php
+
+protected $listen = [
+    MedicationMarkedUncompleted::class => [
+        SendMedicationUncompletedNotification::class,
+    ],
+];
 

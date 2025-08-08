@@ -2,8 +2,10 @@
 
 namespace App\Mail;
 
+use App\Models\Medication;
+use App\Models\Record;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -17,16 +19,18 @@ class MedicationUncompletedMail extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        protected $record, // ① 内服記録の情報をコンストラクタで受け取る
-        protected $user // ② 患者のユーザー情報をコンストラクタで受け取る
-    ) {}
+        public User $user,
+        public Record $record,
+        public Medication $medication,
+        public ?string $reasonNotTaken
+    ) {
+    }
 
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
-        // ③ メール件名を設定
         return new Envelope(
             subject: '内服忘れ通知: ' . $this->user->name . 'さんの内服記録が未完了です',
         );
@@ -37,12 +41,13 @@ class MedicationUncompletedMail extends Mailable
      */
     public function content(): Content
     {
-        // ④ メール本文をBladeテンプレートで定義
         return new Content(
             view: 'emails.medication-uncompleted',
             with: [
-                'record' => $this->record,
                 'user' => $this->user,
+                'record' => $this->record,
+                'medication' => $this->medication,
+                'reasonNotTaken' => $this->reasonNotTaken,
             ],
         );
     }

@@ -22,3 +22,6 @@ MAIL_FROM_ADDRESS="hello@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
+## 1. イベントの発火（Controller）
+
+

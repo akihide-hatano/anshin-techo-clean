@@ -17,7 +17,7 @@ class MedicationMarkedUncompleted
     public Medication $medication;
     public ?string $reasonNotTaken;
     public User $user;
-    
+
     // ★追加: メールに表示する詳細情報をプロパティとして追加
     public string $medicationName;
     public string $takenAt;
@@ -31,7 +31,7 @@ class MedicationMarkedUncompleted
         $this->medication = $medication;
         $this->reasonNotTaken = $reasonNotTaken;
         $this->user = $user;
-        
+
         // ★追加: 渡されたオブジェクトから詳細情報を抽出してプロパティにセット
         $this->medicationName = $medication->medication_name;
         $this->takenAt = $record->taken_at->format('Y年m月d日');

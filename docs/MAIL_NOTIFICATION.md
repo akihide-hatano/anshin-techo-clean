@@ -112,3 +112,21 @@ public function envelope(): Envelope
 ```bash
 sail artisan queue:work
 ```
+
+フロントエンドのホットリロードも動かす場合は、別ターミナルで以下を実行します。
+
+```bash
+sail npm run dev
+```
+
+ブラウザで http://localhost にアクセスし、未完了の内服記録を登録すると、MailpitのWebUI（通常は http://localhost:8025）でメールが確認できます。
+
+
+
+---
+
+## 参考ドキュメント
+- [Laravel Events - 公式ドキュメント](https://laravel.com/docs/12.x/events)
+- [Laravel Mail - 公式ドキュメント](https://laravel.com/docs/12.x/mail)
+- [Laravel Queues - 公式ドキュメント](https://laravel.com/docs/12.x/queues)
+- [Mailpit - 公式GitHub](https://github.com/mailpit/mailpit)

@@ -64,75 +64,70 @@ class RecordController extends Controller
 /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+public function store(Request $request)
     {
-        // ① メソッド開始のログ
         Log::info('DEBUG-STORE: store() method started.');
 
-        //バリデーションルール
-        $validated = $request->validate([
-            'taken_date' => 'required|date',
-            'timing_tag_id' => 'required|exists:timing_tags,timing_tag_id',
-            'medications' => 'required|array|min:1',
-            'medications.*.medication_id' => 'required|exists:medications,medication_id',
-            'medications.*.taken_dosage' => 'nullable|string|max:255',
-            'medications.*.is_completed' => 'nullable|boolean',
-            'medications.*.reason_not_taken' => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'taken_date' => 'required|date',
+                'timing_tag_id' => 'required|exists:timing_tags,timing_tag_id',
+                'medications' => 'required|array|min:1',
+                'medications.*.medication_id' => 'required|exists:medications,medication_id',
+                'medications.*.taken_dosage' => 'nullable|string|max:255',
+                'medications.*.is_completed' => 'nullable|boolean',
+                'medications.*.reason_not_taken' => 'nullable|string|max:255',
+            ]);
 
-        // ② バリデーション成功後のログ
-        Log::info('DEBUG-STORE: Validation successful. Request data: ' . json_encode($validated));
+            Log::info('DEBUG-STORE: Validation successful. Request data: ' . json_encode($validated));
 
-        $timingTag = TimingTag::find($validated['timing_tag_id']);
-        $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
-        $takenAt = Carbon::parse($validated['taken_date'] . ' ' . $baseTime);
+            $timingTag = TimingTag::find($validated['timing_tag_id']);
+            $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
+            $takenAt = Carbon::parse($validated['taken_date'] . ' ' . $baseTime);
 
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
 
-        $record = $user->records()->create([
-            'taken_at' => $takenAt,
-            'timing_tag_id' => $validated['timing_tag_id'],
-        ]);
+            $record = $user->records()->create([
+                'taken_at' => $takenAt,
+                'timing_tag_id' => $validated['timing_tag_id'],
+            ]);
 
-        // ③ レコード作成後のログ
-        Log::info('DEBUG-STORE: New record created with ID ' . $record->record_id);
+            Log::info('DEBUG-STORE: New record created with ID ' . $record->record_id);
 
-        if (isset($validated['medications'])) {
-            $pivotData = [];
-            foreach ($validated['medications'] as $medicationData) {
-                $medicationId = $medicationData['medication_id'];
-                $isCompleted = isset($medicationData['is_completed']) && $medicationData['is_completed'] === '1';
-                $reasonNotTaken = null;
-                if (!$isCompleted) {
-                    $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
-
-                    // ④ イベント発火条件のチェックログ
-                    Log::info("DEBUG-STORE-COND: Condition met for event dispatching for Medication ID {$medicationId} (isCompleted: false).");
-                    
-                    $medication = Medication::find($medicationId);
-                    if ($medication) {
-                        event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
-                        Log::info("Medication marked uncompleted event dispatched from store() for Record ID {$record->record_id}, Medication ID {$medicationId}");
+            if (isset($validated['medications'])) {
+                $pivotData = [];
+                foreach ($validated['medications'] as $medicationData) {
+                    $medicationId = $medicationData['medication_id'];
+                    $isCompleted = isset($medicationData['is_completed']) && $medicationData['is_completed'] === '1';
+                    $reasonNotTaken = null;
+                    if (!$isCompleted) {
+                        $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
+                        
+                        $medication = Medication::find($medicationId);
+                        if ($medication) {
+                            Log::info("DEBUG-STORE-COND: Condition met for event dispatching for Medication ID {$medicationId} (isCompleted: false).");
+                            event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
+                            Log::info("Medication marked uncompleted event dispatched from store() for Record ID {$record->record_id}, Medication ID {$medicationId}");
+                        }
                     }
+                    
+                    $pivotData[$medicationId] = [
+                        'taken_dosage' => $medicationData['taken_dosage'] ?? null,
+                        'is_completed' => $isCompleted,
+                        'reason_not_taken' => $reasonNotTaken,
+                    ];
                 }
-                
-                $pivotData[$medicationId] = [
-                    'taken_dosage' => $medicationData['taken_dosage'] ?? null,
-                    'is_completed' => $isCompleted,
-                    'reason_not_taken' => $reasonNotTaken,
-                ];
+                Log::info('DEBUG-STORE: Starting sync() for pivot table. Pivot data: ' . json_encode($pivotData));
+                $record->medications()->sync($pivotData);
             }
-            // ⑤ sync()実行直前のログ
-            Log::info('DEBUG-STORE: Starting sync() for pivot table. Pivot data: ' . json_encode($pivotData));
-            $record->medications()->sync($pivotData);
+            Log::info('DEBUG-STORE: store() method finished successfully.');
+
+            return redirect()->route('records.index')->with('success', '内服記録が追加されました。');
+        } catch (\Exception $e) {
+            Log::error('Unexpected Error in RecordController@store: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', '予期せぬエラーが発生しました。しばらくしてから再度お試しください。');
         }
-
-        // ⑥ 処理完了後のログ
-        Log::info('DEBUG-STORE: store() method finished successfully.');
-
-        // 成功メッセージと共に内服記録一覧ページにリダイレクト
-        return redirect()->route('records.index')->with('success', '内服記録が追加されました。');
     }
 
     /**

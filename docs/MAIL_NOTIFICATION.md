@@ -105,4 +105,10 @@ public function envelope(): Envelope
 }
 
 ```
+### 5. テスト方法
+.env にMailpit設定を行い、sail up -d でコンテナを起動してください。
+メール送信のキュー処理を動かすために、別ターミナルで以下を実行します。
 
+```bash
+sail artisan queue:work
+```

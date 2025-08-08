@@ -47,6 +47,13 @@
             @endif
         </div>
 
+
+        <div>
+            <x-input-label for="notification_email" :value="__('Notification Email')" />
+            <x-text-input id="notification_email" name="notification_email" type="email" class="mt-1 block w-full" :value="old('notification_email', $user->notification_email)" autocomplete="notification_email" />
+            <x-input-error class="mt-2" :messages="$errors->get('notification_email')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

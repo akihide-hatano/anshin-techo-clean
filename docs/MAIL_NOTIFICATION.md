@@ -22,6 +22,20 @@ MAIL_FROM_ADDRESS="hello@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-## 1. イベントの発火（Controller）
+## 実装フロー（開発者向け — コード付き）
+### 1. イベントの発火（Controller）
+RecordController の store / update 内で、未完了判定時にイベントを発火します。
 
+```php
+// app/Http/Controllers/RecordController.php
+
+use App\Events\MedicationMarkedUncompleted;
+use Illuminate\Support\Facades\Auth;
+
+// 省略...
+
+if (! $isCompleted) {
+    // 未完了の場合にイベントを発火
+    event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
+}
 

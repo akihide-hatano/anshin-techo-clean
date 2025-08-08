@@ -182,176 +182,73 @@ public function store(Request $request)
      * Update the specified resource in storage.
      * 内服記録を更新し、未完了になった薬があれば管理者通知イベントを発火します。
      */
-public function update(Request $request, Record $record)
-    {
-        try {
-            if ($record->user_id !== Auth::id()) {
-                abort(403, 'Unauthorized action.');
-            }
+    public function update(Request $request, Record $record)
+        {
+            try {
+                if ($record->user_id !== Auth::id()) {
+                    abort(403, 'Unauthorized action.');
+                }
 
-            $validated = $request->validate([
-                'taken_date' => 'required|date',
-                'timing_tag_id' => 'required|exists:timing_tags,timing_tag_id',
-                'medications' => 'nullable|array',
-                'medications.*.medication_id' => 'required|exists:medications,medication_id',
-                'medications.*.taken_dosage' => 'nullable|string|max:255',
-                'medications.*.is_completed' => 'nullable|boolean',
-                'medications.*.reason_not_taken' => 'nullable|string|max:255',
-            ]);
+                $validated = $request->validate([
+                    'taken_date' => 'required|date',
+                    'timing_tag_id' => 'required|exists:timing_tags,timing_tag_id',
+                    'medications' => 'nullable|array',
+                    'medications.*.medication_id' => 'required|exists:medications,medication_id',
+                    'medications.*.taken_dosage' => 'nullable|string|max:255',
+                    'medications.*.is_completed' => 'nullable|boolean',
+                    'medications.*.reason_not_taken' => 'nullable|string|max:255',
+                ]);
 
-            $timingTag = TimingTag::find($validated['timing_tag_id']);
-            $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
-            $takenAt = Carbon::parse($validated['taken_date'] . ' ' . $baseTime);
+                $timingTag = TimingTag::find($validated['timing_tag_id']);
+                $baseTime = $timingTag ? $timingTag->base_time : '00:00:00';
+                $takenAt = Carbon::parse($validated['taken_date'] . ' ' . $baseTime);
 
-            $record->update([
-                'taken_at' => $takenAt,
-                'timing_tag_id' => $validated['timing_tag_id'],
-            ]);
+                $record->update([
+                    'taken_at' => $takenAt,
+                    'timing_tag_id' => $validated['timing_tag_id'],
+                ]);
 
-            $pivotData = [];
-            $oldPivotData = $record->medications->keyBy('medication_id')->map(function ($med) {
-                return [
-                    'is_completed' => (bool) $med->pivot->is_completed,
-                    'reason_not_taken' => $med->pivot->reason_not_taken,
-                ];
-            });
-
-            if (isset($validated['medications'])) {
-                foreach ($validated['medications'] as $medicationData) {
-                    $medicationId = $medicationData['medication_id'];
-                    $isCompleted = filter_var($medicationData['is_completed'] ?? false, FILTER_VALIDATE_BOOLEAN);
-                    $reasonNotTaken = null;
-                    if (!$isCompleted) {
-                        $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
-                    }
-
-                    $pivotData[$medicationId] = [
-                        'taken_dosage' => $medicationData['taken_dosage'] ?? null,
-                        'is_completed' => $isCompleted,
-                        'reason_not_taken' => $reasonNotTaken,
+                $pivotData = [];
+                $oldPivotData = $record->medications->keyBy('medication_id')->map(function ($med) {
+                    return [
+                        'is_completed' => (bool) $med->pivot->is_completed,
+                        'reason_not_taken' => $med->pivot->reason_not_taken,
                     ];
+                });
 
-                    $wasCompleted = $oldPivotData->get($medicationId)['is_completed'] ?? true;
+                if (isset($validated['medications'])) {
+                    foreach ($validated['medications'] as $medicationData) {
+                        $medicationId = $medicationData['medication_id'];
+                        $isCompleted = filter_var($medicationData['is_completed'] ?? false, FILTER_VALIDATE_BOOLEAN);
+                        $reasonNotTaken = null;
+                        if (!$isCompleted) {
+                            $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
+                        }
 
-                    // ★追加：条件判定の直前にログを出力
-                    Log::info("DEBUG-COND: Checking event condition for Medication ID {$medicationId}.");
-                    Log::info("DEBUG-COND: New state (isCompleted): " . ($isCompleted ? 'true' : 'false'));
-                    Log::info("DEBUG-COND: Old state (wasCompleted): " . ($wasCompleted ? 'true' : 'false'));
+                        $pivotData[$medicationId] = [
+                            'taken_dosage' => $medicationData['taken_dosage'] ?? null,
+                            'is_completed' => $isCompleted,
+                            'reason_not_taken' => $reasonNotTaken,
+                        ];
 
-                    if (!$isCompleted && $wasCompleted) {
-                        $medication = Medication::find($medicationId);
-                        if ($medication) {
-                            Log::info("DEBUG: Condition met for event dispatching for Medication ID {$medicationId}.");
-                            event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
-                            Log::info("Medication marked uncompleted event dispatched for Record ID {$record->record_id}, Medication ID {$medicationId}");
+                        $wasCompleted = $oldPivotData->get($medicationId)['is_completed'] ?? true;
+
+                        if (!$isCompleted && $wasCompleted) {
+                            $medication = Medication::find($medicationId);
+                            if ($medication) {
+                                Log::info("DEBUG: Condition met for event dispatching for Medication ID {$medicationId}.");
+                                event(new MedicationMarkedUncompleted($record, $medication, $reasonNotTaken, Auth::user()));
+                                Log::info("Medication marked uncompleted event dispatched for Record ID {$record->record_id}, Medication ID {$medicationId}");
+                            }
                         }
                     }
                 }
+                $record->medications()->sync($pivotData);
+
+                return redirect()->route('records.show', $record)->with('success', '内服記録が更新されました。');
+            } catch (\Exception $e) {
+                Log::error('Unexpected Error in RecordController@update: ' . $e->getMessage());
+                return redirect()->back()->withInput()->with('error', '予期せぬエラーが発生しました。しばらくしてから再度お試しください。');
             }
-
-            Log::info('DEBUG: Starting sync() for pivot table.');
-            $record->medications()->sync($pivotData);
-            Log::info('DEBUG: sync() completed successfully.');
-
-            return redirect()->route('records.show', $record)->with('success', '内服記録が更新されました。');
-        } catch (QueryException $e) {
-            Log::error('Database Error in RecordController@update: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'データベースエラーが発生しました。入力内容を確認してください。');
-        } catch (Exception $e) {
-            Log::error('Unexpected Error in RecordController@update: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', '予期せぬエラーが発生しました。しばらくしてから再度お試しください。');
         }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Record $record)
-    {
-        if ($record->user_id !== Auth::id()) {
-            abort(403, '記事削除の権限がありません。');
-        }
-        $record->delete();
-        return redirect()->route('records.index')->with('success', '内服記録が削除されました。');
-    }
-
-    public function calendar()
-    {
-        return view('records.calendar');
-    }
-
-    /**
-     * Get calendar events (medication records) for FullCalendar.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // ★★★ 修正後のgetCalendarEventsメソッド全体 ★★★
-    public function getCalendarEvents(Request $request)
-    {
-        try {
-            $user = Auth::user();
-
-            $start = Carbon::parse($request->input('start'));
-            $end = Carbon::parse($request->input('end'));
-
-            // ユーザーに紐づく、指定期間内の内服記録を取得
-            // medications と timingTag リレーションをEager Load
-            $records = Record::where('user_id', $user->id)
-                ->whereBetween('taken_at', [$start, $end])
-                ->with(['medications', 'timingTag'])
-                ->get();
-
-            $events = [];
-
-            foreach ($records as $record) {
-                if (!$record->taken_at instanceof Carbon) {
-                    Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
-                    continue;
-                }
-
-                // その記録に未完了の薬が一つでもあれば true
-                $recordHasUncompleted = $record->medications->contains(function ($medication) {
-                    return !$medication->pivot->is_completed;
-                });
-
-                $date = $record->taken_at->toDateString();
-                $timingName = $record->timingTag->timing_name ?? '不明';
-
-                $statusSymbol = $recordHasUncompleted ? '×' : '⚪︎';
-                $color = $recordHasUncompleted ? '#FFC107' : '#4CAF50';
-
-                // イベントのタイトルは「⚪︎」または「×」と、その記録の服用タイミング名
-                $title = $statusSymbol . ' ' . $timingName;
-
-                // イベントのURLは、その記録の詳細ページにリンク
-                $url = route('records.show', $record->record_id);
-                //カスタムクラスの割り当てる
-                $className = $recordHasUncompleted ? 'event-uncompleted' : 'event-completed';
-
-                $events[] = [
-                    // イベントIDにはレコードIDを使用することで、各イベントがユニークになる
-                    'id' => $record->record_id,
-                    'title' => $title,
-                    'start' => $date,
-                    'allDay' => true,
-                    'url' => $url,
-                    'className' => $className,
-                    'extendedProps' => [
-                        'record_id' => $record->record_id,
-                        'has_uncompleted_meds' => $recordHasUncompleted,
-                        'timing_name' => $timingName,
-                        'description' => 'この日の服用記録: ' . $timingName . ($recordHasUncompleted ? ' (未完了あり)' : ' (全て完了)'),
-                    ],
-                ];
-            }
-
-            return response()->json($events);
-        } catch (Exception $e) {
-            Log::error('Error in RecordController@getCalendarEvents: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-
-            return response()->json([], 500);
-        }
-    }
-}

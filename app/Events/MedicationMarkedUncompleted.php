@@ -32,7 +32,7 @@ class MedicationMarkedUncompleted
         $this->reasonNotTaken = $reasonNotTaken;
         $this->user = $user;
 
-        // ★追加: 渡されたオブジェクトから詳細情報を抽出してプロパティにセット
+
         $this->medicationName = $medication->medication_name;
         $this->takenAt = $record->taken_at->format('Y年m月d日');
     }

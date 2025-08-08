@@ -77,3 +77,32 @@ public function handle(MedicationMarkedUncompleted $event): void
 }
 ```
 
+### 4. メールの構築と送信（Mailable クラス）
+
+MedicationUncompletedMail クラスは、リスナーから渡されたデータを受け取り、メールの件名や本文（ビュー）を設定します。
+
+```php
+// app/Mail/MedicationUncompletedMail.php
+
+public function content(): Content
+{
+    return new Content(
+        view: 'emails.medication-uncompleted',
+        with: [
+            'user' => $this->user,
+            'record' => $this->record,
+            'medication' => $this->medication,
+            'reasonNotTaken' => $this->reasonNotTaken,
+        ],
+    );
+}
+
+public function envelope(): Envelope
+{
+    return new Envelope(
+        subject: '【安心手帳】内服忘れ通知',
+    );
+}
+
+```
+

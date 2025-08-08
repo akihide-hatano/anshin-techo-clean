@@ -2,11 +2,10 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
+use App\Models\Record;
+use App\Models\Medication;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -15,11 +14,39 @@ class MedicationMarkedUncompleted
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
+     * @var \App\Models\Record
      */
-    public function __construct()
+    public $record;
+
+    /**
+     * @var \App\Models\Medication
+     */
+    public $medication;
+
+    /**
+     * @var string|null
+     */
+    public $reasonNotTaken;
+
+    /**
+     * @var \App\Models\User
+     */
+    public $user;
+
+    /**
+     * Create a new event instance.
+     *
+     * @param \App\Models\Record $record
+     * @param \App\Models\Medication $medication
+     * @param string|null $reasonNotTaken
+     * @param \App\Models\User $user
+     */
+    public function __construct(Record $record, Medication $medication, ?string $reasonNotTaken, User $user)
     {
-        //
+        $this->record = $record;
+        $this->medication = $medication;
+        $this->reasonNotTaken = $reasonNotTaken;
+        $this->user = $user;
     }
 
     /**
@@ -29,8 +56,6 @@ class MedicationMarkedUncompleted
      */
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        return [];
     }
 }

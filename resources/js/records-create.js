@@ -1,4 +1,3 @@
-// resources/js/records_create.js
 document.addEventListener('DOMContentLoaded', function () {
     const medicationsContainer = document.getElementById('medications-container');
     const addMedicationBtn = document.getElementById('add-medication-btn');

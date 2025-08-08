@@ -91,30 +91,27 @@ class RecordController extends Controller
             'timing_tag_id' => $validated['timing_tag_id'],
         ]);
 
-        // ★★★ ここから修正 ★★★
-        if (isset($validated['medications'])) {
-            foreach ($validated['medications'] as $medicationData) {
-                $isCompleted = isset($medicationData['is_completed']) && $medicationData['is_completed'] === '1';
+    if (isset($validated['medications'])) {
+        // medication_id の重複を排除するために、medication_id をキーとしてデータを整理
+        $uniqueMedications = collect($validated['medications'])->keyBy('medication_id');
 
-                // ★★★ ここにdd()を追加 ★★★
-                // $medicationData の中身と、$isCompleted がどうなっているかを確認
-                // dd($medicationData, $isCompleted);
-                // ★★★ dd()追加ここまで ★★★
+        foreach ($uniqueMedications as $medicationData) {
+            $isCompleted = isset($medicationData['is_completed']) && $medicationData['is_completed'] === '1';
 
-                $reasonNotTaken = null;
-                if (!$isCompleted) {
-                    $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
-                }
-                // RecordMedication モデルを直接作成することで、created イベントが発火する
-                RecordMedication::create([
-                    'record_id' => $record->record_id, // 作成したRecordのID
-                    'medication_id' => $medicationData['medication_id'],
-                    'taken_dosage' => $medicationData['taken_dosage'] ?? null,
-                    'is_completed' => $isCompleted,
-                    'reason_not_taken' => $reasonNotTaken,
-                ]);
+            $reasonNotTaken = null;
+            if (!$isCompleted) {
+                $reasonNotTaken = $medicationData['reason_not_taken'] ?? null;
             }
+
+            RecordMedication::create([
+                'record_id' => $record->record_id,
+                'medication_id' => $medicationData['medication_id'],
+                'taken_dosage' => $medicationData['taken_dosage'] ?? null,
+                'is_completed' => $isCompleted,
+                'reason_not_taken' => $reasonNotTaken,
+            ]);
         }
+    }
         // 成功メッセージと共に内服記録一覧ページにリダイレクト
         return redirect()->route('records.index')->with('success', '内服記録が追加されました。');
     }

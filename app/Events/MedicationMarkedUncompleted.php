@@ -13,41 +13,17 @@ class MedicationMarkedUncompleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * The record instance.
-     *
-     * @var \App\Models\Record
-     */
-    public $record;
-
-    /**
-     * The medication instance.
-     *
-     * @var \App\Models\Medication
-     */
-    public $medication;
-
-    /**
-     * The reason not taken.
-     *
-     * @var string|null
-     */
-    public $reasonNotTaken;
-
-    /**
-     * The user instance.
-     *
-     * @var \App\Models\User
-     */
-    public $user;
+    public Record $record;
+    public Medication $medication;
+    public ?string $reasonNotTaken;
+    public User $user;
+    
+    // ★追加: メールに表示する詳細情報をプロパティとして追加
+    public string $medicationName;
+    public string $takenAt;
 
     /**
      * Create a new event instance.
-     *
-     * @param \App\Models\Record $record
-     * @param \App\Models\Medication $medication
-     * @param string|null $reasonNotTaken
-     * @param \App\Models\User $user
      */
     public function __construct(Record $record, Medication $medication, ?string $reasonNotTaken, User $user)
     {
@@ -55,15 +31,9 @@ class MedicationMarkedUncompleted
         $this->medication = $medication;
         $this->reasonNotTaken = $reasonNotTaken;
         $this->user = $user;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [];
+        
+        // ★追加: 渡されたオブジェクトから詳細情報を抽出してプロパティにセット
+        $this->medicationName = $medication->medication_name;
+        $this->takenAt = $record->taken_at->format('Y年m月d日');
     }
 }

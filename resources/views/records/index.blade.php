@@ -6,7 +6,7 @@
 <div class="mb-4 flex flex-col md:flex-row items-center md:justify-between gap-4">
 
     {{-- 左側に配置するダミー要素 --}}
-    <div class="hidden md:block flex-grow"></div>
+    <div class="hidden md:block flex-shrink-0 w-24"></div>
 
     {{-- 中央のコンテンツ（タイトルとアイコン、未内服数） --}}
     <div class="flex flex-col items-center justify-center w-full md:w-auto">

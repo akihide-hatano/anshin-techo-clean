@@ -19,32 +19,58 @@ class RecordController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        // まず、ユーザーがログインしていることを確認するガード句
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        // ★Intelephense向けに型ヒントを追加★
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        $records = $user->records()
-            ->with(['medications'])
-            ->orderBy('taken_at', 'desc')
-            ->paginate(10);
-
-        // 各レコードに「未完了の薬があるか」を示すカスタム属性を追加
-        // paginator からコレクションを取得し、each() で各モデルを処理
-        $records->getCollection()->each(function ($record) {
-            $record->record_has_uncompleted = $record->medications->contains(function ($medication) {
-                return !$medication->pivot->is_completed;
-            });
-        });
-
-        return view('records.index', compact('records'));
+public function index(Request $request)
+{
+    // まず、ユーザーがログインしていることを確認するガード句
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
+
+    // ★Intelephense向けに型ヒントを追加★
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+
+    // 検索クエリのビルドを開始
+    $query = $user->records()->with(['medications']);
+
+    // 1. 完了ステータス (is_completed) で絞り込み
+    // リクエストに 'completion' パラメータがあり、'uncompleted' または 'completed' の値を持つ場合
+    if ($request->filled('completion')) {
+        if ($request->input('completion') === 'uncompleted') {
+            // 未完了の薬が一つでもあるレコードを検索
+            $query->whereHas('medications', function ($q) {
+                $q->where('is_completed', false);
+            });
+        } elseif ($request->input('completion') === 'completed') {
+            // 全ての薬が完了しているレコードを検索
+            $query->whereDoesntHave('medications', function ($q) {
+                $q->where('is_completed', false);
+            });
+        }
+    }
+
+    // 2. 作成日 (created_at) で絞り込み
+    // リクエストに 'created_from' パラメータがある場合
+    if ($request->filled('created_from')) {
+        $query->whereDate('created_at', '>=', $request->input('created_from'));
+    }
+
+    // リクエストに 'created_to' パラメータがある場合
+    if ($request->filled('created_to')) {
+        $query->whereDate('created_at', '<=', $request->input('created_to'));
+    }
+    // 絞り込み後の結果を取得
+    $records = $query->orderBy('taken_at', 'desc')->paginate(10);
+
+    // 各レコードに「未完了の薬があるか」を示すカスタム属性を追加
+    $records->getCollection()->each(function ($record) {
+        $record->record_has_uncompleted = $record->medications->contains(function ($medication) {
+            return !$medication->pivot->is_completed;
+        });
+    });
+
+    return view('records.index', compact('records'));
+}
 
     /**
      * Show the form for creating a new resource.

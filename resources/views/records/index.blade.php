@@ -3,24 +3,45 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-4 flex items-center justify-between">
-                        {{-- 左側のダミー要素 --}}
-                        <div class="flex-grow"></div>
+<div class="mb-4 flex items-center justify-between">
+    {{-- 左側のダミー要素 --}}
+    <div class="flex-grow"></div>
 
-                        {{-- 中央のコンテンツ --}}
-                        <div class="flex items-center">
-                            <h1 class="text-2xl font-bold">新しい内服記録を登録</h1>
-                            <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
-                        </div>
+    {{-- 中央のコンテンツ --}}
+    <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-center">内服記録一覧</h1>
+        <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
+    </div>
 
-                        {{-- 右端のボタン --}}
-                        <div class="flex-grow flex justify-end">
-                            <a href="{{ route('records.create') }}"
-                                class="inline-flex items-end px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('新規記録を追加') }}
-                            </a>
-                        </div>
-                    </div>
+    {{-- 右端のボタン群（検索フォームと新規記録ボタン） --}}
+    <div class="flex-grow flex justify-end items-end space-x-4">
+        {{-- 新しい検索フォーム --}}
+        <form action="{{ route('records.index') }}" method="GET" class="flex items-center space-x-2">
+            {{-- 完了ステータスのドロップダウン --}}
+            <div class="flex flex-col">
+                <label for="completion" class="block text-sm font-medium text-gray-700">内服ステータス</label>
+                <select name="completion" id="completion" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">すべて</option>
+                    <option value="uncompleted" {{ request('completion') === 'uncompleted' ? 'selected' : '' }}>未完了</option>
+                    <option value="completed" {{ request('completion') === 'completed' ? 'selected' : '' }}>完了</option>
+                </select>
+            </div>
+            
+            {{-- 検索ボタン --}}
+            <div class="self-end">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    検索
+                </button>
+            </div>
+        </form>
+
+        {{-- 既存の新規記録を追加ボタン --}}
+        <a href="{{ route('records.create') }}"
+            class="inline-flex items-end px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            {{ __('新規記録を追加') }}
+        </a>
+    </div>
+</div>
 
                     @if ($records->isEmpty())
                         <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">

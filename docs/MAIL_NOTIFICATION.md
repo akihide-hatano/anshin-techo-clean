@@ -4,8 +4,10 @@
 このアプリには、服薬を記録していない利用者へメールでリマインドを送信する「内服忘れ通知機能」があります。
 通知はキュー経由で非同期送信され、開発環境では **Mailpit** を使用して動作確認できます。
 
-**
-![内服忘れ通知フロー](/public/images/mail_notification_flow.png)
+## 内服通知忘れフロー
+<p align="center">
+  <img src="public/images/mail_notification_flow.png" alt="内服忘れ通知フロー" width="800">
+</p>
 
 
 ---

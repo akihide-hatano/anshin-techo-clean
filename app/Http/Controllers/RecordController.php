@@ -251,4 +251,84 @@ public function store(Request $request)
                 return redirect()->back()->withInput()->with('error', '予期せぬエラーが発生しました。しばらくしてから再度お試しください。');
             }
         }
+
+     public function calendar()
+    {
+        return view('records.calendar');
     }
+
+    /**
+     * Get calendar events (medication records) for FullCalendar.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    // ★★★ 修正後のgetCalendarEventsメソッド全体 ★★★
+    public function getCalendarEvents(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $start = Carbon::parse($request->input('start'));
+            $end = Carbon::parse($request->input('end'));
+
+            // ユーザーに紐づく、指定期間内の内服記録を取得
+            // medications と timingTag リレーションをEager Load
+            $records = Record::where('user_id', $user->id)
+                ->whereBetween('taken_at', [$start, $end])
+                ->with(['medications', 'timingTag'])
+                ->get();
+
+            $events = [];
+
+            foreach ($records as $record) {
+                if (!$record->taken_at instanceof Carbon) {
+                    Log::warning("Record ID {$record->record_id} has invalid taken_at: " . $record->taken_at);
+                    continue;
+                }
+
+                // その記録に未完了の薬が一つでもあれば true
+                $recordHasUncompleted = $record->medications->contains(function ($medication) {
+                    return !$medication->pivot->is_completed;
+                });
+
+                $date = $record->taken_at->toDateString();
+                $timingName = $record->timingTag->timing_name ?? '不明';
+
+                $statusSymbol = $recordHasUncompleted ? '×' : '⚪︎';
+                $color = $recordHasUncompleted ? '#FFC107' : '#4CAF50';
+
+                // イベントのタイトルは「⚪︎」または「×」と、その記録の服用タイミング名
+                $title = $statusSymbol . ' ' . $timingName;
+
+                // イベントのURLは、その記録の詳細ページにリンク
+                $url = route('records.show', $record->record_id);
+                //カスタムクラスの割り当てる
+                $className = $recordHasUncompleted ? 'event-uncompleted' : 'event-completed';
+
+                $events[] = [
+                    // イベントIDにはレコードIDを使用することで、各イベントがユニークになる
+                    'id' => $record->record_id,
+                    'title' => $title,
+                    'start' => $date,
+                    'allDay' => true,
+                    'url' => $url,
+                    'className' => $className,
+                    'extendedProps' => [
+                        'record_id' => $record->record_id,
+                        'has_uncompleted_meds' => $recordHasUncompleted,
+                        'timing_name' => $timingName,
+                        'description' => 'この日の服用記録: ' . $timingName . ($recordHasUncompleted ? ' (未完了あり)' : ' (全て完了)'),
+                    ],
+                ];
+            }
+
+            return response()->json($events);
+        } catch (Exception $e) {
+            Log::error('Error in RecordController@getCalendarEvents: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            return response()->json([], 500);
+        }
+    }
+}

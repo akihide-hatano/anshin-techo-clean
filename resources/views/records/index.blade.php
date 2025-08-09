@@ -3,19 +3,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-<div class="mb-4 flex items-center justify-between">
-    {{-- 左側のダミー要素 --}}
-    <div class="flex-grow"></div>
+<div class="mb-4 flex flex-col md:flex-row items-center md:justify-between">
 
-    {{-- 中央のコンテンツ --}}
-    <div class="flex items-center">
+    {{-- 中央のコンテンツ（タイトルとアイコン） --}}
+    <div class="flex items-center justify-center w-full md:w-auto mb-4 md:mb-0">
         <h1 class="text-2xl font-bold text-center">内服記録一覧</h1>
         <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
     </div>
 
-    {{-- 右端のボタン群（検索フォームと新規記録ボタン） --}}
-    <div class="flex-grow flex justify-end items-end space-x-4">
-        {{-- 新しい検索フォーム --}}
+    {{-- ボタン群（検索フォームと新規記録ボタン） --}}
+    <div class="w-full md:w-auto flex flex-row justify-end items-end space-y-4 md:space-y-2 space-x-2 md:space-x-4">
+        {{-- 検索フォーム --}}
         <form action="{{ route('records.index') }}" method="GET" class="flex items-center space-x-2">
             {{-- 完了ステータスのドロップダウン --}}
             <div class="flex flex-col">

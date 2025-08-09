@@ -69,6 +69,13 @@ public function index(Request $request)
         });
     });
 
+    //未完了の薬があるレコードの件数を取得
+    $uncompletedRecordCount = $user->records()
+        ->whereHas('medications',function($q){
+            $q->where('is_completed',false);
+        })
+        ->count();
+
     return view('records.index', compact('records'));
 }
 

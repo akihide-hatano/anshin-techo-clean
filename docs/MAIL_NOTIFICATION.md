@@ -29,6 +29,12 @@
   <img src="../public/images/mail_notification_flow.png" alt="内服忘れ通知フロー" width="600">
 </p>
 
+## 内服通知忘れフロー
+<p align="center">
+  <img src="../public/images/mail_notification_flow.png" alt="内服忘れ通知フロー" width="500" height="400">
+</p>
+
+
 
 ---
 

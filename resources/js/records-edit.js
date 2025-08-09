@@ -157,15 +157,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const medicationOptionsHtml = availableMedications.map(medication => `<option value="${medication.medication_id}">${medication.medication_name}</option>`).join('');
         const reasonOptionsHtml = reasonOptions.map(option => `<option value="${option.value}">${option.text}</option>`).join('');
 
+
+        // 服用量のオプションを動的に生成する
+        let dosageOptionsHtml = `<option value="">服用量</option>`;
+        for (let i = 1; i <= 5; i++) {
+            dosageOptionsHtml += `<option value="${i}">${i} 錠</option>`;
+        }
+
         newEntry.innerHTML = `
             <div class="flex items-center space-x-2 mb-2">
                 <select name="medications[${medicationIndex}][medication_id]" class="medication-select block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                     <option value="">薬を選択</option>
                     ${medicationOptionsHtml}
                 </select>
-                <input type="text" name="medications[${medicationIndex}][taken_dosage]"
-                       class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                       placeholder="服用量">
+                <select name="medications[${medicationIndex}][taken_dosage]"
+                        class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        required>
+                    ${dosageOptionsHtml}
+                </select>
                 <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>

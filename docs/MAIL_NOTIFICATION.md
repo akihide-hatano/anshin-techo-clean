@@ -6,7 +6,7 @@
 
 ## 内服通知忘れフロー
 <p align="center">
-  <img src="public/images/mail_notification_flow.png" alt="内服忘れ通知フロー" width="800">
+  <img src="images/mail_notification_flow.png" alt="内服忘れ通知フロー" width="800">
 </p>
 
 

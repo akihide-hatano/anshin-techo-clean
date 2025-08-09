@@ -3,17 +3,29 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-<div class="mb-4 flex flex-col md:flex-row items-center md:justify-between">
+<div class="mb-4 flex flex-col md:flex-row items-center md:justify-between gap-4">
 
-    {{-- 中央のコンテンツ（タイトルとアイコン） --}}
-    <div class="flex items-center justify-center w-full md:w-auto mb-4 md:mb-0">
-        <h1 class="text-2xl font-bold text-center">内服記録一覧</h1>
-        <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
+    {{-- 左側に配置するダミー要素 --}}
+    <div class="hidden md:block flex-grow"></div>
+
+    {{-- 中央のコンテンツ（タイトルとアイコン、未内服数） --}}
+    <div class="flex flex-col items-center justify-center w-full md:w-auto">
+        {{-- タイトルとアイコン --}}
+        <div class="flex items-center">
+            <h1 class="text-2xl font-bold text-center">内服記録一覧</h1>
+            <img src="{{ asset('images/medication-records.png') }}" alt="内服記録アイコン" class="h-14 w-auto ml-2">
+        </div>
+        {{-- 未内服数 --}}
+        @if ($uncompletedRecordCount > 0)
+        <p class="font-semibold text-red-500">
+            未内服数: {{ $uncompletedRecordCount }}件
+        </p>
+        @endif
     </div>
 
-    {{-- ボタン群（検索フォームと新規記録ボタン） --}}
-    <div class="w-full md:w-auto flex flex-row justify-end items-end space-y-4 md:space-y-2 space-x-2 md:space-x-4">
-        {{-- 検索フォーム --}}
+    {{-- 右端のボタン群（検索フォームと新規記録ボタン） --}}
+    <div class="w-full md:w-auto flex flex-row justify-end items-end space-x-2 md:space-x-4">
+        {{-- 検索フォームとボタン --}}
         <form action="{{ route('records.index') }}" method="GET" class="flex items-center space-x-2">
             {{-- 完了ステータスのドロップダウン --}}
             <div class="flex flex-col">
@@ -40,7 +52,6 @@
         </a>
     </div>
 </div>
-
                     @if ($records->isEmpty())
                         <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-md p-6">
                             <p class="text-center text-gray-700">{{ __('まだ内服記録がありません。') }}</p>

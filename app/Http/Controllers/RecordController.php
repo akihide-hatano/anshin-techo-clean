@@ -76,7 +76,7 @@ public function index(Request $request)
         })
         ->count();
 
-    return view('records.index', compact('records'));
+    return view('records.index', compact('records','uncompletedRecordCount'));
 }
 
     /**

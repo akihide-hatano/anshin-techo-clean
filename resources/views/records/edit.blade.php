@@ -87,9 +87,16 @@
                                                     data-old-medication-id="{{ old('medications.'.$index.'.medication_id', $medication->medication_id) }}">
                                                 <option value="">薬を選択</option>
                                             </select>
-                                            <input type="text" name="medications[{{ $index }}][taken_dosage]"
-                                                   class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                   placeholder="服用量" value="{{ old('medications.'.$index.'.taken_dosage', $medication->pivot->taken_dosage) }}">
+                                            <select name="medications[{{ $index }}][taken_dosage]"
+                                                    class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                    required>
+                                                <option value="">服用量</option>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <option value="{{ $i }}" {{ (old('medications.'.$index.'.taken_dosage', $medication->pivot->taken_dosage) == $i) ? 'selected' : '' }}>
+                                                        {{ $i }} 錠
+                                                    </option>
+                                                @endfor
+                                            </select>
                                             <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
                                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
@@ -130,9 +137,16 @@
                                                             data-old-medication-id="{{ $oldMedication['medication_id'] ?? '' }}">
                                                         <option value="">薬を選択</option>
                                                     </select>
-                                                    <input type="text" name="medications[{{ $index }}][taken_dosage]"
-                                                           class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                           placeholder="服用量" value="{{ $oldMedication['taken_dosage'] ?? '' }}">
+                                                    <select name="medications[{{ $index }}][taken_dosage]"
+                                                            class="w-1/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                            required>
+                                                        <option value="">服用量</option>
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <option value="{{ $i }}" {{ (isset($oldMedication['taken_dosage']) && $oldMedication['taken_dosage'] == $i) ? 'selected' : '' }}>
+                                                                {{ $i }} 錠
+                                                            </option>
+                                                        @endfor
+                                                    </select>
                                                     <button type="button" class="text-red-600 hover:text-red-800 remove-medication-btn">
                                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>

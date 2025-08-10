@@ -285,6 +285,18 @@ public function store(Request $request)
             }
         }
 
+     /**
+     * Remove the specified resource from storage.
+     */
+
+     public function destroy(Record $record){
+        if( $record->user_id !== Auth::id()){
+            abort(403,'記事削除の権限がありません。');
+        }
+            $record->delete();
+            return redirect()->route('records.index')->with('success','内服記録が削除しました');
+        }
+        
      public function calendar()
     {
         return view('records.calendar');

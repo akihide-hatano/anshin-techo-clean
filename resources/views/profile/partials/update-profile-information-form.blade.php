@@ -49,9 +49,10 @@
 
 
         <div>
-            <x-input-label for="notification_email" :value="__('Notification Email')" />
+            <x-input-label for="notification_email" :value="__('通知用メールアドレス（内服忘れ時）')" />
             <x-text-input id="notification_email" name="notification_email" type="email" class="mt-1 block w-full" :value="old('notification_email', $user->notification_email)" autocomplete="notification_email" />
             <x-input-error class="mt-2" :messages="$errors->get('notification_email')" />
+            <p class="text-xs text-gray-500 mt-1">{{ __('ご家族など通知を受け取るメールアドレス。未設定でも可') }}</p>
         </div>
 
         <div class="flex items-center gap-4">

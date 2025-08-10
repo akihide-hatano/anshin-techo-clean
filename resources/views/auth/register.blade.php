@@ -40,10 +40,15 @@
         </div>
 
         <div class="mt-4">
-            <x-input-label for="notification_email" :value="__('Notification Email')" />
-            <x-text-input id="notification_email" class="block mt-1 w-full" type="email" name="notification_email" :value="old('notification_email')" autocomplete="notification_email" />
+            <x-input-label for="notification_email" :value="__('通知用メールアドレス（内服忘れ時）')" />
+            <x-text-input id="notification_email" class="block mt-1 w-full"
+                        type="email" name="notification_email"
+                        :value="old('notification_email')"
+                        autocomplete="email" />
             <x-input-error :messages="$errors->get('notification_email')" class="mt-2" />
+            <p class="text-xs text-gray-500 mt-1">{{ __('ご家族など通知を受け取るメールアドレス。未設定でも可') }}</p>
         </div>
+
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">

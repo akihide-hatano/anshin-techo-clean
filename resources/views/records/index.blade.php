@@ -70,7 +70,7 @@
                         </div>
                     @endif
                         {{-- カードグリッドコンテナ --}}
-                        <div class="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6"> {{-- 中画面以上で2列表示、ギャップは6 --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6">
                             @foreach ($records as $record)
                                 <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col h-full"> {{-- カードの基本スタイルと高さを揃えるflex --}}
                                     {{-- カードヘッダー --}}
@@ -99,7 +99,7 @@
                                             @if ($record->medications->isEmpty())
                                                 <span class="block mt-1">{{ __('なし') }}</span>
                                             @else
-                                                <ul class="list-none pl-0 mt-1 space-y-1"> {{-- リストスタイルを削除し、マージンとスペースを追加 --}}
+                                                <ul class="list-none pl-0 mt-1 space-y-1">
                                                     @foreach ($record->medications as $medication)
                                                         <li class="text-sm">
                                                             {{ $medication->medication_name }} ({{ $medication->pivot->taken_dosage ?? '-' }})
@@ -143,7 +143,7 @@
                         </div>
 
                         {{-- ページネーションリンク --}}
-                        <div class="flex justify-center mt-8">
+                        <div class="flex justify-end mt-8">
                             {{ $records->links() }}
                         </div>
                     @endif

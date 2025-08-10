@@ -92,7 +92,7 @@
                                                     required>
                                                 <option value="">服用量</option>
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <option value="{{ $i }}" {{ (old('medications.'.$index.'.taken_dosage', $medication->pivot->taken_dosage) == $i) ? 'selected' : '' }}>
+                                                    <option value="{{ $i }}錠" {{ (old('medications.'.$index.'.taken_dosage', $medication->pivot->taken_dosage) == $i) ? 'selected' : '' }}>
                                                         {{ $i }} 錠
                                                     </option>
                                                 @endfor

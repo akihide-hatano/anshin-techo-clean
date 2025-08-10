@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // 服用量のオプションを動的に生成する
         let dosageOptionsHtml = `<option value="">服用量</option>`;
         for (let i = 1; i <= 5; i++) {
-        dosageOptionsHtml += `<option value="${i}">${i} 錠</option>`;
+        dosageOptionsHtml += `<option value="${i}錠">${i} 錠</option>`;
         }
 
         newEntry.innerHTML = `

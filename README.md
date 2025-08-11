@@ -29,21 +29,26 @@ Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬
 ## 📸 アプリ画面イメージ
 
 ### トップページ
+<p align="center">
 <img src="docs/images/toppage-image.png" width="600" alt="トップページ">
-
+</p>
 アプリ概要や主要機能へのリンクを配置し、直感的なナビゲーションを提供します。
 
 ---
 
 ### 内服記録一覧
+<p align="center">
 <img src="docs/images/record-medication-image.png" width="600" alt="内服記録一覧">
+</p>
 
 日時ごとの服薬記録をカード形式で一覧表示。未服薬は赤帯で強調され、編集・削除も可能です。
 
 ---
 
 ### カレンダー表示
+<p align="center">
 <img src="docs/images/calendar-image.png" width="600" alt="カレンダー表示">
+</p>
 
 `FullCalendar.js` を利用して服薬スケジュールを視覚的に表示。色分けで服薬状況を一目で確認できます。
 

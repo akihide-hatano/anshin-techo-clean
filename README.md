@@ -1,26 +1,9 @@
-<p align="center">
-  <a href="https://laravel.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/your-username/anshin-techo-clean">
-    <img src="https://img.shields.io/badge/Project-Anshin--Techo-blue.svg" alt="Project Name">
-  </a>
-  <a href="https://packagist.org/packages/laravel/framework">
-    <img src="https://img.shields.io/packagist/v/laravel/framework" alt="Laravel Latest Stable Version">
-  </a>
-  <a href="https://packagist.org/packages/laravel/framework">
-    <img src="https://img.shields.io/packagist/l/laravel/framework" alt="License">
-  </a>
-</p>
 
 ---
 
-# 📘 About Anshin-Techo
+# 📘 About Anshin-App
 
-**「安心手帳」**は、高齢者の服薬記録を家族が**遠隔から管理**できるWebアプリケーションです。
+**「Anshin-App」**は、高齢者の服薬記録を家族が**遠隔から管理**できるWebアプリケーションです。
 Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬状況を**リアルタイムで確認・通知**します。
 
 ---
@@ -42,6 +25,26 @@ Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬
   SMTP設定とキュー実行が必要。詳細は[開発者向け資料](docs/MAIL_NOTIFICATION.md)を参照。
 
 ---
+
+## 📸 アプリ画面イメージ
+
+<p align="center">
+  <img src="docs/images/toppage-image.png" width="300" alt="toppage">
+  <img src="docs/images/record-medication-image.png" width="300" alt="record-medication">
+  <img src="docs/images/calendar-image.png" width="300" alt="calendar">
+</p>
+
+<p align="center">
+  <em>左: ダッシュボード画面 | 中央: 内服薬一覧画面 | 右: カレンダー画面</em>
+</p>
+
+### 画面説明
+- **ダッシュボード**  
+  本日の服薬状況や最新の記録を一覧表示。服薬忘れを即時に確認可能。
+- **内服薬一覧**  
+  内服済みの薬を検索・編集でき、。
+- **カレンダー表示**  
+  `FullCalendar.js`で日ごとの服薬状況を可視化。色分けで未服薬も一目でわかる。
 
 ## 🎯 なぜ作るのか（Problem & Goal）
 

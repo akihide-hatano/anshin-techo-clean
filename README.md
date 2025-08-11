@@ -29,9 +29,9 @@ Laravelの**メール送信機能**と**カレンダーUI**を活用し、服薬
 ## 📸 アプリ画面イメージ
 
 <p align="center">
-  <img src="docs/images/toppage-image.png" width="300" alt="toppage">
-  <img src="docs/images/record-medication-image.png" width="300" alt="record-medication">
-  <img src="docs/images/calendar-image.png" width="300" alt="calendar">
+  <img src="docs/images/toppage-image.png" width="200" alt="toppage">
+  <img src="docs/images/record-medication-image.png" width="200" alt="record-medication">
+  <img src="docs/images/calendar-image.png" width="200" alt="calendar">
 
 </p>
 

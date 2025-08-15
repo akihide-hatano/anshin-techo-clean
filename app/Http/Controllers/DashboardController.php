@@ -30,9 +30,6 @@ class DashboardController extends Controller
                         ->where('user_id',$userId)
                         ->whereDate('created_at',today())
                         ->get();
-    // ここに dd() を追加して $todayRecords の中身を確認
-    // dd($todayRecords);
-
         // ビューにデータを渡して表示
         return view('dashboard', compact('medicationReminders','todayRecords'));
     }

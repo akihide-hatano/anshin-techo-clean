@@ -4,7 +4,7 @@
 #
 
 app = "anshin-techo-clean"
-primary_region = "nrt"
+primary_region = "fra"
 
 [build.args]
   NODE_VERSION = "18"

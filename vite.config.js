@@ -5,9 +5,15 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/css/calendar.css',
-                'resources/js/app.js'],
+        'resources/css/app.css',
+        'resources/js/app.js',
+        // Blade で @vite しているページ別エントリを全部のせる
+        'resources/js/records-index.js',
+        'resources/js/records-edit.js',
+        'resources/js/records-create.js',
+        'resources/js/calendar.js',
+        'resources/css/calendar.css', // Blade で直接読み込んでいるため追加
+            ],
             refresh: true,
         }),
     ],

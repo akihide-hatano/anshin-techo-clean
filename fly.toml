@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for anshin-techo-clean on 2025-08-17T15:47:56+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "anshin-techo-clean"
+primary_region = "nrt"
+
+[build.args]
+  NODE_VERSION = "18"
+  PHP_VERSION  = "8.2"
+
+[env]
+  APP_ENV = "production"
+  LOG_CHANNEL = "stderr"
+  SESSION_DRIVER = "cookie"
+  SESSION_SECURE_COOKIE = "true"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines  = "stop"
+  min_machines_running = 0
+  processes = ["app"]
+
+[deploy]
+  release_command = "bash -lc 'php artisan migrate --force && php artisan storage:link || true'"

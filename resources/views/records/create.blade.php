@@ -55,7 +55,7 @@
                             </select>
                             @error('timing_tag_id')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                            @enderror <div class=""></div>
                         </div>
 
                         {{-- 薬の選択と服用量入力 (複数選択可能) --}}

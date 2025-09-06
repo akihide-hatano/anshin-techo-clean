@@ -92,7 +92,7 @@ return [
             'password' => null,
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
+            'search_path' => env('DB_SCHEMA', 'public'),
             'sslmode' => 'require',
         ],
 
